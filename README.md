@@ -57,4 +57,4 @@ Integrasi front-end dan back-end.
 
 
 ### Tautan Berita Acara
-[Sheets]([https://docs.google.com/spreadsheets/d/1Kf5tnp03r5uWb0qYTN6iOjYl2eJzlMuzx58vV5ndeyk/edit#gid=0])
+https://docs.google.com/spreadsheets/d/1Kf5tnp03r5uWb0qYTN6iOjYl2eJzlMuzx58vV5ndeyk/edit#gid=0
