@@ -45,6 +45,7 @@ Fitur Read List memungkinkan pengguna untuk membuat daftar bacaan pribadi mereka
 
 #### Peran atau aktor pengguna aplikasi 🎩
 **Guest** 
+
 Guest adalah mereka yang mengakses aplikasi ReadMe tanpa perlu masuk atau mendaftar. Mereka hanya dapat melihat List Book Page, mencari buku dalam dataset, melihat detail buku, dan mengeksplorasi fitur dasar aplikasi, tetapi tidak bisa melihat ulasan, memberikan ulasan, dan beberapa fitur lainnya.
 
 **Registered User**
