@@ -7,6 +7,9 @@
 - Rizqi Bayu Utama - 2206826330
 - Jessica Ruth Damai Yanti Manurung - 2206082783
 
+### Deployment Web (PTS)
+https://readme-c11-tk.pbp.cs.ui.ac.id
+
 ### Pipeline Status
 [![Release]([Link])]([Link])
 
@@ -20,10 +23,10 @@ ReadMe adalah sebuah aplikasi berbasis mobile yang menggunakan kecerdasan buatan
 **Manfaat dari mobile app ini**
 - Mempermudah pencarian rekomendasi buku : Pengguna mendapatkan rekomendasi buku yang sesuai dengan minat mereka sehingga mereka lebih mungkin menemukan buku-buku yang mereka nikmati.
 - Memberikan referensi yang lebih variatif : Masyarakat mendapatkan akses ke berbagai genre dan topik buku sehingga mereka dapat meningkatkan pengetahuan mereka dalam berbagai bidang.
-- Meningkatkan efisiensi waktu : Website ini dapat mempermudah pengguna dalam mendapatkan informasi relevan terkait buku yang dicari sehingga dapat meningkatkan efisiensi waktu.
+- Meningkatkan efisiensi waktu : Mobile app ini dapat mempermudah pengguna dalam mendapatkan informasi relevan terkait buku yang dicari sehingga dapat meningkatkan efisiensi waktu.
 - Meningkatkan Literasi masyarakat : Membantu meningkatkan minat membaca di kalangan masyarakat dengan memberikan akses mudah ke berbagai buku, termasuk yang berkualitas.
 
-#### Daftar modul 📃    
+#### Daftar modul 📃
 
 - **Modul Pencarian dan Histori Pencarian (oleh Ghany)**
 Modul pencarian merupakan inti dari aplikasi ReadMe, di mana algoritma AI canggih kami beroperasi untuk memberikan rekomendasi buku yang akurat dan personal. Pengguna dapat memasukkan permintaan mereka dalam bentuk teks sederhana, dan AI kami akan menganalisis permintaan tersebut untuk merekomendasikan buku yang paling relevan. Histori pencarian memungkinkan pengguna untuk meninjau kembali pencarian mereka sebelumnya, memberikan akses cepat ke rekomendasi yang pernah diterima.
@@ -42,6 +45,7 @@ Fitur Read List memungkinkan pengguna untuk membuat daftar bacaan pribadi mereka
 
 #### Peran atau aktor pengguna aplikasi 🎩
 **Guest** 
+
 Guest adalah mereka yang mengakses aplikasi ReadMe tanpa perlu masuk atau mendaftar. Mereka hanya dapat melihat List Book Page, mencari buku dalam dataset, melihat detail buku, dan mengeksplorasi fitur dasar aplikasi, tetapi tidak bisa melihat ulasan, memberikan ulasan, dan beberapa fitur lainnya.
 
 **Registered User**
