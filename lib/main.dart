@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:readme/authentication/login.dart';
+import 'package:readme/modules/home-page/BookPage.dart';
 import 'package:readme/modules/list-book/list.dart';
+import 'package:readme/modules/home-page/models/book.dart'; 
 
 void main() {
   runApp(const MyApp());
