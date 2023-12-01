@@ -170,7 +170,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:readme/modules/home-page/models/book.dart';
-import 'package:readme/widgets/left_drawer.dart';
 import 'package:readme/modules/details-book/details.dart';
 
 class ListPage extends StatefulWidget {
@@ -208,7 +207,6 @@ class _ListPageState extends State<ListPage> {
       appBar: AppBar(
         title: const Text('Product'),
       ),
-      drawer: const LeftDrawer(),
       body: Column(
         children: [
           // Buttons for All Book and My Book
