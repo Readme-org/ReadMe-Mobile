@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:readme/authentication/login.dart';
-import 'package:readme/modules/home-page/BookPage.dart';
+import 'package:readme/modules/home-page/HomeBookPage.dart';
 import 'package:readme/modules/list-book/list.dart';
 import 'package:readme/modules/home-page/models/book.dart'; 
 
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
                     useMaterial3: true,
                 ),
                 debugShowCheckedModeBanner: false,
-                home: const BookPage(),
+                home: const HomebookPage(),
               )
             );
         
