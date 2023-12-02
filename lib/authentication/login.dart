@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                                 'password': password,
                                 });
                     
-                                if (request.loggedIn) {
+                                if (request.loggedIn) {                                    
                                     String message = response['message'];
                                     String uname = response['username'];
                                     Navigator.pushReplacement(

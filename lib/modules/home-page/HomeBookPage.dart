@@ -3,6 +3,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:readme/modules/list-book/list.dart';
+import 'package:readme/widgets/appbar.dart';
 import 'package:readme/widgets/navbar.dart';
 import 'package:readme/widgets/background.dart';
 
@@ -36,19 +37,7 @@ class BookPageState extends State<HomebookPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'ReadMe',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 26,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.blue.shade800,
-        elevation: 0,
-      ),
+      appBar: CustomAppBar(title: 'ReadMe'),
       body: GradientBackground(
         colorTween: _colorTween,
         child: Center(

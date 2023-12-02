@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:readme/modules/list-book/allBookPage.dart';
-import 'package:readme/widgets/background.dart';
+import 'package:readme/modules/list-book/myBookPage.dart';
+import 'package:readme/widgets/appbar.dart';
 import 'package:readme/widgets/navbar.dart'; 
 
 class ListPage extends StatefulWidget {
@@ -14,32 +15,13 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
   TextEditingController searchController = TextEditingController();
   String filterType = 'All'; // Can be 'All' or 'My'
   bool isAllBooksSelected = true;
-  late Animation<Color?> _colorTween;
-  late AnimationController _animationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(vsync: this, duration: Duration(seconds: 15))
-      ..repeat(reverse: true);
-    _colorTween = ColorTween(begin: Colors.blue.shade400, end: Colors.blue.shade900)
-      .animate(_animationController);
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Product'),
-      ),
-      body: GradientBackground(
-        colorTween: _colorTween,
+      appBar: CustomAppBar(title: 'Book List'),
+      body: Container(
+        color: Color(0xFFCDEFFF),
         child: Column(
           children: [
             Padding(
@@ -132,15 +114,82 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
 
             // Display AllBook content or other content based on the flag
             Expanded(
-              child: isAllBooksSelected ? buildAllBooks(context) : Container(
-                // Content when "My Book" is selected or another state
-                alignment: Alignment.center,
-                child: const Text("My Book content goes here"),
-              ),
+              child: isAllBooksSelected ? buildAllBooks(context) : buildMyBooks(context)
             ),
           ],
         ),
       ),
+      
+      floatingActionButton: !isAllBooksSelected ? Padding(
+        padding: EdgeInsets.only(bottom: 65),
+        child: FloatingActionButton(
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (BuildContext context) {
+                return SingleChildScrollView(  // Tambahkan SingleChildScrollView
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Title',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Authors',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'ISBN',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Image URL',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Description',
+                          border: OutlineInputBorder(),
+                        ),
+                        maxLines: 3,
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        child: Text('Submit'),
+                        onPressed: () {
+                          // Logic for form submission
+                          
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.blue, 
+                          onPrimary: Colors.white, 
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+          child: Icon(Icons.add),
+          backgroundColor: Color.fromARGB(255, 64, 64, 235),
+        ),
+      ) : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: const CustomBottomNavigationBar(
         selectedIndex: 1,
       ),
