@@ -18,9 +18,9 @@ class GradientBackground extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.white, colorTween.value ?? Colors.blue],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [Color.fromARGB(78, 147, 205, 232), colorTween.value ?? Color.fromARGB(255, 3, 142, 255)],
             ),
           ),
           child: child,

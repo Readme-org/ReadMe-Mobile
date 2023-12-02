@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:readme/modules/home-page/HomeBookPage.dart';
 import 'package:readme/modules/list-book/list.dart';
-// Import halaman yang relevan di sini
+import 'package:readme/authentication/login.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
   final int selectedIndex;
@@ -24,6 +26,15 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
     setState(() {
       _selectedIndex = index;
     });
+
+    if (index != 0 && !Provider.of<CookieRequest>(context, listen: false).loggedIn) {
+      // Jika pengguna belum masuk dan mencoba mengakses halaman lain selain HomeBookPage
+      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      if (!Provider.of<CookieRequest>(context, listen: false).loggedIn) {
+        _selectedIndex = 0;
+      }
+      return;
+    }
 
     // Navigasi berdasarkan index yang dipilih
     switch (index) {
@@ -58,15 +69,15 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
           label: 'Search',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.library_books_outlined),
+          icon: Icon(Icons.library_books),
           label: 'List',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.star_border_rounded),
+          icon: Icon(Icons.star_rounded),
           label: 'Rating',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.bookmark_add_outlined),
+          icon: Icon(Icons.bookmark_add),
           label: 'Wishlist',
         ),
       ],

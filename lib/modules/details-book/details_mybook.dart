@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:readme/modules/home-page/models/book.dart';
+import 'package:readme/modules/list-book/models/myBook.dart';
 
-class DetailsPage extends StatefulWidget {
-  final Book book;
+class DetailsMyBookPage extends StatefulWidget {
+  final MyBook book;
 
-  const DetailsPage({Key? key, required this.book}) : super(key: key);
+  const DetailsMyBookPage({Key? key, required this.book}) : super(key: key);
 
   @override
   _DetailsPageState createState() => _DetailsPageState();
 }
 
-class _DetailsPageState extends State<DetailsPage> {
+class _DetailsPageState extends State<DetailsMyBookPage> {
   bool isWishlistSelected = false; // State to manage wishlist button selection
 
   @override
@@ -70,34 +70,6 @@ class _DetailsPageState extends State<DetailsPage> {
                     ),
                   ),
                   const SizedBox(height: 24.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      OutlinedButton(
-                        onPressed: () {
-                          setState(() {
-                            isWishlistSelected = !isWishlistSelected; // Toggle wishlist selection
-                          });
-                        },
-                        style: OutlinedButton.styleFrom(
-                          primary: isWishlistSelected ? Colors.white : Colors.black,
-                          backgroundColor: isWishlistSelected ? Colors.red : Colors.white,
-                          side: BorderSide(color: isWishlistSelected ? Colors.red : Colors.grey),
-                        ),
-                        child: Text(isWishlistSelected ? 'Added to Wishlist' : 'Wishlist'),
-                      ),
-                      OutlinedButton(
-                        onPressed: () {
-                          // Diskusi Chat button logic
-                        },
-                        style: OutlinedButton.styleFrom(
-                          primary: Colors.black,
-                          side: const BorderSide(color: Colors.grey),
-                        ),
-                        child: const Text('Diskusi Chat'),
-                      ),
-                    ],
-                  ),
                   SizedBox(height: 24.0),
                   Text(
                     'Deskripsi:',
@@ -114,11 +86,19 @@ class _DetailsPageState extends State<DetailsPage> {
                     ),
                   ),
                   SizedBox(height: 24.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Handle Wishlist/Add Review logic
-                    },
-                    child: Text('Add Review'),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Handle Delete logic
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red, 
+                        onPrimary: Colors.white, 
+                      ),
+                      child: Text('Delete'),
+                    ),
                   ),
                 ],
               ),
