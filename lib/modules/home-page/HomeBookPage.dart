@@ -244,7 +244,7 @@ class SearchHistoryPage extends StatefulWidget {
 }
 
 class _SearchHistoryPageState extends State<SearchHistoryPage> {
-  List<dynamic> searchHistories = [];
+  List<Map<String, dynamic>> searchHistories = []; // Menyimpan daftar history sebagai map
   bool isLoading = true;
   String errorMessage = '';
 
@@ -265,21 +265,18 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final List<dynamic> data = json.decode(response.body);
         setState(() {
-          searchHistories = data;
+          searchHistories = data.cast<Map<String, dynamic>>(); // Proper casting of the list items
           isLoading = false;
         });
       } else {
-        setState(() {
-          isLoading = false;
-          errorMessage = 'Failed to load search history.';
-        });
+        throw Exception('Failed to load search history with status code: ${response.statusCode}.');
       }
     } catch (e) {
       setState(() {
         isLoading = false;
-        errorMessage = 'An error occurred: ${e.toString()}';
+        errorMessage = 'An error occurred: $e';
       });
     }
   }
@@ -291,14 +288,24 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
     } else if (errorMessage.isNotEmpty) {
       return Center(child: Text(errorMessage));
     } else {
-      return ListView.builder(
-        itemCount: searchHistories.length,
-        itemBuilder: (context, index) {
-          var history = searchHistories[index];
-          return ListTile(
-            title: Text(history['query']),
-          );
-        },
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Search History'),
+          backgroundColor: Colors.blue.shade800,
+        ),
+        body: ListView.builder( // Pastikan di dalam Scaffold
+          itemCount: searchHistories.length,
+          itemBuilder: (context, index) {
+            // Akses 'fields' untuk mendapatkan 'query'
+            final historyItem = searchHistories[index];
+            final query = historyItem['fields']['query'] as String? ?? 'Unknown'; // Gunakan 'fields' dan 'query'
+            
+            return ListTile(
+              title: Text(query),
+              subtitle: Text("Created at: ${historyItem['fields']['created_at']}"),
+            );
+          },
+        ),
       );
     }
   }
