@@ -33,7 +33,6 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
