@@ -7,6 +7,10 @@ import 'package:readme/modules/home-page/models/book.dart';
 FutureBuilder<List<Book>> buildAllBooks(BuildContext context) {
   Future<List<Book>> fetchBooks() async {
     var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/book-json/');
+    
+    //For testing, unComment for testing,tapi janlupa dicomment kode atasnya
+    // var url = Uri.parse('https://127.0.0.1:8000/book-json/');
+
     var response = await http.get(url, headers: {"Content-Type": "application/json"});
 
     if (response.statusCode == 200) {

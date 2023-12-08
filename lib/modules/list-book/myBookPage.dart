@@ -7,6 +7,10 @@ import 'package:readme/modules/list-book/models/myBook.dart';
 FutureBuilder<List<MyBook>> buildMyBooks(BuildContext context) {
   Future<List<MyBook>> fetchBooks() async {
     var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/list-book/myBook-json/');
+
+    //For testing
+    // var url = Uri.parse('https://127.0.0.1:8000/list-book/myBook-json/');
+    
     var response = await http.get(url, headers: {"Content-Type": "application/json"});
 
     if (response.statusCode == 200) {
@@ -95,4 +99,32 @@ FutureBuilder<List<MyBook>> buildMyBooks(BuildContext context) {
       }
     },
   );
+}
+
+Future<void> addBook(BuildContext context, String title, String authors, String isbn, String imageUrl, String description) async {
+  final response = await http.post(
+    Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/list-book/add-book-flutter/'),
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode({
+      'title': title,
+      'authors': authors,
+      'isbn': isbn,
+      'image': imageUrl,
+      'description': description,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    // Jika server mengembalikan respon "OK", maka tampilkan snackbar dengan pesan sukses.
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Book added successfully!')),
+    );
+  } else {
+    // Jika server tidak mengembalikan respon "OK", maka tampilkan error.
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to add the book.')),
+    );
+  }
 }
