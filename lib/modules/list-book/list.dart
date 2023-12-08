@@ -3,6 +3,7 @@ import 'package:readme/modules/list-book/allBookPage.dart';
 import 'package:readme/modules/list-book/myBookPage.dart';
 import 'package:readme/widgets/appbar.dart';
 import 'package:readme/widgets/navbar.dart'; 
+import 'package:http/http.dart' as http;
 
 class ListPage extends StatefulWidget {
   const ListPage({Key? key}) : super(key: key);
@@ -13,8 +14,25 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
   TextEditingController searchController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController authorsController = TextEditingController();
+  TextEditingController isbnController = TextEditingController();
+  TextEditingController imageUrlController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+
   String filterType = 'All'; // Can be 'All' or 'My'
   bool isAllBooksSelected = true;
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    authorsController.dispose();
+    isbnController.dispose();
+    imageUrlController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +151,7 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       TextFormField(
+                        controller: titleController,
                         decoration: InputDecoration(
                           labelText: 'Title',
                           border: OutlineInputBorder(),
@@ -140,6 +159,7 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                       ),
                       SizedBox(height: 10),
                       TextFormField(
+                        controller: authorsController,
                         decoration: InputDecoration(
                           labelText: 'Authors',
                           border: OutlineInputBorder(),
@@ -147,6 +167,7 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                       ),
                       SizedBox(height: 10),
                       TextFormField(
+                        controller: isbnController,
                         decoration: InputDecoration(
                           labelText: 'ISBN',
                           border: OutlineInputBorder(),
@@ -154,6 +175,7 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                       ),
                       SizedBox(height: 10),
                       TextFormField(
+                        controller: imageUrlController,
                         decoration: InputDecoration(
                           labelText: 'Image URL',
                           border: OutlineInputBorder(),
@@ -161,6 +183,7 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                       ),
                       SizedBox(height: 10),
                       TextFormField(
+                        controller: descriptionController,
                         decoration: InputDecoration(
                           labelText: 'Description',
                           border: OutlineInputBorder(),
@@ -171,7 +194,17 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                       ElevatedButton(
                         child: Text('Submit'),
                         onPressed: () {
-                          // Logic for form submission
+                          final String title = titleController.text;
+                          final String authors = authorsController.text;
+                          final String isbn = isbnController.text;
+                          final String imageUrl = imageUrlController.text;
+                          final String description = descriptionController.text;
+
+                          // Panggil fungsi addBook.
+                          addBook(context, title, authors, isbn, imageUrl, description);
+
+                          // Tutup bottom sheet.
+                          Navigator.pop(context);
                           
                         },
                         style: ElevatedButton.styleFrom(
