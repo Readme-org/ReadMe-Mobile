@@ -36,7 +36,7 @@ class BookPageState extends State<HomebookPage> with TickerProviderStateMixin {
 
   Future<List<Book>> _searchBooks(String query) async {
     final response = await http.post(
-      Uri.parse('http://127.0.0.1:8000/search-books/'),
+      Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/search-books/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -257,7 +257,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
   Future<void> _loadSearchHistory() async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/history/history-json/'),
+        Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/history/history-json/'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Accept': 'application/json',
