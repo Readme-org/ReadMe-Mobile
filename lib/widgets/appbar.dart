@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:readme/authentication/user.dart';
+import 'package:readme/modules/home-page/HomeBookPage.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -14,7 +17,34 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final request = Provider.of<CookieRequest>(context);
+    final request = context.watch<CookieRequest>();
+    String username = biguname.isLoggedIn ? biguname.username : "Guest";
+
+    void _handleLogout() async {
+      // final response = await request.logout("https://readme-c11-tk.pbp.cs.ui.ac.id/auth/logout/");
+
+      // For testing ONLY
+      final response = await request.logout("http://127.0.0.1:8000/auth/logout/");
+
+      String message = response["message"];
+
+      if (response['status']) {
+        String uname = response["username"];
+        biguname = UserData(isLoggedIn: false, username: "Guest");
+
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("$message Sampai jumpa, $uname."),
+        ));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomebookPage()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("$message"),
+        ));
+      }
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -45,27 +75,39 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () {
-                // Logika ketika ikon profil diklik
-              },
-              child: Row(
-                children: <Widget>[
-                  Text(
-                    "guest",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16.0,
-                    ),
+          if (biguname.isLoggedIn)
+            Padding(
+              padding: const EdgeInsets.only(right: 20.0),
+              child: PopupMenuButton(
+                onSelected: (value) {
+                  if (value == 'logout') {
+                    _handleLogout();
+                  }
+                },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                  PopupMenuItem(
+                    value: 'logout',
+                    child: Text(
+                      'Logout',
+                      style: TextStyle(color: Colors.red),
+                      ),
                   ),
-                  SizedBox(width: 8),
-                  Icon(Icons.account_circle),
                 ],
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      username,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Icon(Icons.account_circle),
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

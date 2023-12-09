@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:readme/modules/list-book/models/myBook.dart';
+import 'package:readme/modules/list-book/myBookPage.dart';
 
 class DetailsMyBookPage extends StatefulWidget {
   final MyBook book;
@@ -30,7 +31,7 @@ class _DetailsPageState extends State<DetailsMyBookPage> {
                   borderRadius: BorderRadius.circular(5), // More circular corners
                 ),
                 margin: EdgeInsets.all(16),
-                width: MediaQuery.of(context).size.width * 0.7,
+                width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.4,
                 child: ClipRRect( // Clip the image with the same border radius
                   borderRadius: BorderRadius.circular(5),
@@ -90,9 +91,7 @@ class _DetailsPageState extends State<DetailsMyBookPage> {
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: 16.0),
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Handle Delete logic
-                      },
+                      onPressed: () => deleteMyBook(context, widget.book.pk),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.red, 
                         onPrimary: Colors.white, 

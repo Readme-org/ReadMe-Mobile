@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:readme/modules/details-book/details_mybook.dart';
 import 'package:readme/modules/list-book/allBookPage.dart';
 import 'package:readme/modules/list-book/myBookPage.dart';
 import 'package:readme/widgets/appbar.dart';
 import 'package:readme/widgets/navbar.dart'; 
-import 'package:http/http.dart' as http;
 
 class ListPage extends StatefulWidget {
-  const ListPage({Key? key}) : super(key: key);
+  final int initialTab;
+
+  const ListPage({Key? key, this.initialTab = 0}) : super(key: key);
 
   @override
   _ListPageState createState() => _ListPageState();
@@ -22,6 +24,12 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
 
   String filterType = 'All'; // Can be 'All' or 'My'
   bool isAllBooksSelected = true;
+
+  @override
+  void initState() {
+    super.initState();
+    isAllBooksSelected = widget.initialTab == 0;
+  }
 
   @override
   void dispose() {
@@ -199,10 +207,14 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                           final String imageUrl = imageUrlController.text;
                           final String description = descriptionController.text;
 
-                          // Panggil fungsi addBook.
-                          addBook(context, title, authors, isbn, imageUrl, description);
+                          // Panggil fungsi addBook
+                          addBook(context, title, authors, isbn, imageUrl, description).then((_) {
+                            setState(() {
+                              buildMyBooks(context);
+                            });
+                          });
 
-                          // Tutup bottom sheet.
+                          // Tutup bottom sheet
                           Navigator.pop(context);
                           
                         },
@@ -215,7 +227,14 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                   ),
                 );
               },
-            );
+            ).whenComplete(() {
+              // Clear the text fields here
+              titleController.clear();
+              authorsController.clear();
+              isbnController.clear();
+              imageUrlController.clear();
+              descriptionController.clear();
+            });
           },
           child: Icon(Icons.add),
           backgroundColor: Color.fromARGB(255, 64, 64, 235),
