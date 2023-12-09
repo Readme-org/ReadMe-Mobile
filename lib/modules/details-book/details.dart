@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readme/modules/diskusi-book/diskusiBook.dart';
 import 'package:readme/modules/home-page/models/book.dart';
 
 class DetailsPage extends StatefulWidget {
@@ -89,6 +90,11 @@ class _DetailsPageState extends State<DetailsPage> {
                       OutlinedButton(
                         onPressed: () {
                           // Diskusi Chat button logic
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const DiscussionPage(),
+                            ));
                         },
                         style: OutlinedButton.styleFrom(
                           primary: Colors.black,
