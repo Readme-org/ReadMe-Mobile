@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:readme/modules/details-book/details_mybook.dart';
+import 'package:readme/modules/list-book/list.dart';
 import 'package:readme/modules/list-book/models/myBook.dart';
 
 FutureBuilder<List<MyBook>> buildMyBooks(BuildContext context) {
   Future<List<MyBook>> fetchBooks() async {
-    var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/list-book/myBook-json/');
+    // var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/list-book/myBook-json/');
 
     //For testing
-    // var url = Uri.parse('https://127.0.0.1:8000/list-book/myBook-json/');
-    
+    var url = Uri.parse('http://127.0.0.1:8000/list-book/myBook-json/');
+
     var response = await http.get(url, headers: {"Content-Type": "application/json"});
 
     if (response.statusCode == 200) {
@@ -103,7 +104,11 @@ FutureBuilder<List<MyBook>> buildMyBooks(BuildContext context) {
 
 Future<void> addBook(BuildContext context, String title, String authors, String isbn, String imageUrl, String description) async {
   final response = await http.post(
-    Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/list-book/add-book-flutter/'),
+    // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/list-book/add-book-flutter/'),
+
+    //For testing
+    Uri.parse('http://127.0.0.1:8000/list-book/add-book-flutter/'),
+
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -125,6 +130,32 @@ Future<void> addBook(BuildContext context, String title, String authors, String 
     // Jika server tidak mengembalikan respon "OK", maka tampilkan error.
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Failed to add the book.')),
+    );
+  }
+}
+
+Future<void> deleteMyBook(BuildContext context, int bookId) async {
+  final response = await http.delete(
+    // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/list-book/delete-book-flutter/$bookId/'),
+
+    //For testing ONLY
+    Uri.parse('http://127.0.0.1:8000/list-book/delete-book-flutter/$bookId/'),
+
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      // Add any other headers like authorization tokens if needed
+    },
+  );
+
+  if (response.statusCode == 200) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => ListPage(initialTab: 1)), // 1 untuk My Book tab
+      (Route<dynamic> route) => false,
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to delete the book.')),
     );
   }
 }

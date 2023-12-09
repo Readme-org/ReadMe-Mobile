@@ -30,7 +30,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   borderRadius: BorderRadius.circular(5), // More circular corners
                 ),
                 margin: EdgeInsets.all(16),
-                width: MediaQuery.of(context).size.width * 0.7,
+                width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.4,
                 child: ClipRRect( // Clip the image with the same border radius
                   borderRadius: BorderRadius.circular(5),
