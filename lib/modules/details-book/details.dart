@@ -93,7 +93,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const DiscussionPage(),
+                              builder: (context) => DiscussionPage(book: widget.book),
                             ));
                         },
                         style: OutlinedButton.styleFrom(

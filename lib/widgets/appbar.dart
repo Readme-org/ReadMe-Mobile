@@ -30,7 +30,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
       if (response['status']) {
         String uname = response["username"];
-        biguname = UserData(isLoggedIn: false, username: "Guest");
+        biguname = UserData(isLoggedIn: false, username: "Guest", uid: -1);
 
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("$message Sampai jumpa, $uname."),

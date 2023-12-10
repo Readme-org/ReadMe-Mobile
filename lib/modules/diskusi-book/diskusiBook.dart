@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:readme/modules/home-page/models/book.dart';
 import 'package:readme/modules/diskusi-book/models/post.dart';
+import 'package:readme/authentication/user.dart';
 
 class DiscussionPage extends StatefulWidget {
-  const DiscussionPage({Key? key}) : super(key: key);
+  final Book book;
+
+  const DiscussionPage({Key? key, required this.book}) : super(key: key);
   @override
   _DiscussionPageState createState() => _DiscussionPageState();
 }
