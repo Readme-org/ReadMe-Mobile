@@ -103,8 +103,7 @@ class _PostFormPageState extends State<PostFormPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.deepPurple),
+                      backgroundColor: MaterialStateProperty.all(Colors.deepPurple),
                     ),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
@@ -120,20 +119,13 @@ class _PostFormPageState extends State<PostFormPage> {
                               'book': _selectedBook.pk,
                             }));
                         if (response['status'] == 'success') {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                             content: Text("Post telah berhasil dibuat!"),
                           ));
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DiscussionPage(book: _selectedBook)),
-                          );
+                          Navigator.pop(context);
                         } else {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content:
-                                Text("Terdapat kesalahan, silakan coba lagi."),
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text("Terdapat kesalahan, silakan coba lagi."),
                           ));
                         }
                       }
