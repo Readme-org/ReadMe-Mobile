@@ -170,13 +170,11 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   if (request.loggedIn) {
     String message = response['message'];
     String uname = response['username'];
-    int uid = response['uid']; // Misalnya, 'uid' diambil dari response
-
-    UserData biguname = UserData(isLoggedIn: true, username: uname, uid: uid);
+    int uid = response.containsKey('uid') ? response['uid'] : -1;
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomebookPage()),
+      MaterialPageRoute(builder: (context) => HomebookPage()), // Asumsikan HomebookPage siap menerima dan menggunakan data pengguna
     );
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -198,4 +196,5 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       ),
     );
   }
-  }}
+}
+}
