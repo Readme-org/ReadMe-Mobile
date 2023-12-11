@@ -22,7 +22,9 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
   TextEditingController imageUrlController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
-  String filterType = 'All'; // Can be 'All' or 'My'
+  String searchQuery = '';
+
+  String filterType = 'All';
   bool isAllBooksSelected = true;
 
   @override
@@ -93,44 +95,11 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                       ),
                       onChanged: (value) {
                         // Implement search filter logic based on currentSearchFilter
+                        setState(() {
+                          searchQuery = value;
+                        });
                       },
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.filter_list),
-                    onPressed: () {
-                      // Implement filter logic
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return SafeArea(
-                            child: Wrap(
-                              children: <Widget>[
-                                ListTile(
-                                  leading: const Icon(Icons.library_books),
-                                  title: const Text('All'),
-                                  onTap: () => {},
-                                ),
-                                ListTile(
-                                  leading: const Icon(Icons.fitness_center_rounded),
-                                  title: const Text('Action'),
-                                  onTap: () => {}),
-                                ListTile(
-                                  leading: const Icon(Icons.favorite),
-                                  title: const Text('Romance'),
-                                  onTap: () => {},
-                                ),
-                                ListTile(
-                                  leading: const Icon(Icons.science),
-                                  title: const Text('Science'),
-                                  onTap: () => {},
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
                   ),
                 ],
               ),
@@ -139,7 +108,7 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
 
             // Display AllBook content or other content based on the flag
             Expanded(
-              child: isAllBooksSelected ? buildAllBooks(context) : buildMyBooks(context)
+              child: isAllBooksSelected ? buildAllBooks(context, title: searchQuery) : buildMyBooks(context)
             ),
           ],
         ),
