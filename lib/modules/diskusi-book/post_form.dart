@@ -36,11 +36,12 @@ class _PostFormPageState extends State<PostFormPage> {
     final request = context.watch<CookieRequest>();
 
     return Scaffold(
+      backgroundColor: Color(0xFFCDEFFF),
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'Form Tambah Post',
-          ),
+        centerTitle: true,
+        title: const Text(
+          'Form Tambah Post',
+          style: TextStyle(fontSize: 18),
         ),
         // backgroundColor: Colors.deepPurple,
         // foregroundColor: Colors.white,
@@ -66,9 +67,12 @@ class _PostFormPageState extends State<PostFormPage> {
                       _title = value!;
                     });
                   },
-                  validator: (String? value) {
+                  maxLength: 300,
+                  validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Title tidak boleh kosong!";
+                      return 'Please enter a title';
+                    } else if (value.length > 300) {
+                      return 'Title cannot exceed 300 characters';
                     }
                     return null;
                   },
@@ -89,9 +93,13 @@ class _PostFormPageState extends State<PostFormPage> {
                       _content = value!;
                     });
                   },
-                  validator: (String? value) {
+                  maxLines: 3,
+                  maxLength: 40000,
+                  validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Konten tidak boleh kosong!";
+                      return 'Please enter the content';
+                    } else if (value.length > 40000) {
+                      return 'Content cannot exceed 40000 characters';
                     }
                     return null;
                   },
