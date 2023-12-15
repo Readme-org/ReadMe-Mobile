@@ -159,42 +159,43 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 
   Future<void> _performLogin(CookieRequest request, BuildContext context) async {
-  String username = _usernameController.text;
-  String password = _passwordController.text;
+    String username = _usernameController.text;
+    String password = _passwordController.text;
 
-  final response = await request.login(
-    "http://127.0.0.1:8000/auth/login/",
-    {'username': username, 'password': password},
-  );
-
-  if (request.loggedIn) {
-    String message = response['message'];
-    String uname = response['username'];
-    int uid = response.containsKey('uid') ? response['uid'] : -1;
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomebookPage()), // Asumsikan HomebookPage siap menerima dan menggunakan data pengguna
+    final response = await request.login(
+      "http://127.0.0.1:8000/auth/login/",
+      {'username': username, 'password': password},
     );
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text("$message Selamat datang, $uname.")));
-  } else {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Login Gagal'),
-        content: Text(response['message']),
-        actions: [
-          TextButton(
-            child: const Text('OK'),
-            onPressed: () {
+
+    if (request.loggedIn) {
+      String message = response['message'];
+      String uname = response['username'];
+      int uid = response.containsKey('id') ? response['id'] : -1;
+      biguname = UserData(isLoggedIn: true, username: uname, uid: uid);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomebookPage()), // Asumsikan HomebookPage siap menerima dan menggunakan data pengguna
+      );
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text("$message Selamat datang, $uname.")));
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Login Gagal'),
+          content: Text(response['message']),
+          actions: [
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
                 Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-    );
+              },
+            ),
+          ],
+        ),
+      );
+    }
   }
-}
 }

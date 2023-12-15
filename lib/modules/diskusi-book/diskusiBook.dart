@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:readme/modules/diskusi-book/post_details.dart';
 import 'package:readme/modules/diskusi-book/post_form.dart';
 import 'package:readme/modules/home-page/models/book.dart';
 import 'package:readme/modules/diskusi-book/models/post.dart';
@@ -37,9 +38,11 @@ class _DiscussionPageState extends State<DiscussionPage> {
       context,
       MaterialPageRoute(builder: (context) => PostFormPage(book: _selectedBook)),
     );
-    setState(() {
-      _postsFuture = fetchPosts();
-    });
+    setState(
+      () {
+        _postsFuture = fetchPosts();
+      },
+    );
   }
 
   @override
@@ -64,6 +67,12 @@ class _DiscussionPageState extends State<DiscussionPage> {
         if (d != null) {
           Post post = Post.fromJson(d);
           if (post.fields.book == _selectedBook.pk) {
+            var url2 = Uri.parse('http://127.0.0.1:8000/diskusi-book/get_username/${post.fields.user}/');
+            var response2 = await http.get(url2, headers: {"Content-Type": "application/json"});
+            if (response2.statusCode == 200) {
+              var data2 = jsonDecode(response2.body);
+              post.username = data2['username'];
+            }
             postsJson.add(post);
           }
         }
@@ -94,19 +103,26 @@ class _DiscussionPageState extends State<DiscussionPage> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                return Card(
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PostPage(book: _selectedBook, post: snapshot.data![index]),
+                      ),
+                    );
+                  },
+                  child: Card(
                     child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => PostFormPage(book: _selectedBook),
-                            //   ),
-                            // );
-                          },
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              snapshot.data![index].username,
+                              style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic, color: Colors.grey),
+                            ),
                             Text(
                               snapshot.data![index].fields.title,
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -133,125 +149,150 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return SingleChildScrollView(
-                                              // Tambahkan SingleChildScrollView
-                                              padding: const EdgeInsets.all(16),
-                                              child: Form(
-                                                key: _formKey,
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    TextFormField(
-                                                      controller: titleController,
-                                                      decoration: const InputDecoration(
-                                                        labelText: 'Title',
-                                                        border: OutlineInputBorder(),
-                                                      ),
-                                                      validator: (value) {
-                                                        if (value == null || value.isEmpty) {
-                                                          return 'Please enter a title';
-                                                        }
-                                                        return null;
-                                                      },
+                                            // Tambahkan SingleChildScrollView
+                                            padding: const EdgeInsets.all(16),
+                                            child: Form(
+                                              key: _formKey,
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  TextFormField(
+                                                    controller: titleController,
+                                                    decoration: const InputDecoration(
+                                                      labelText: 'Title',
+                                                      border: OutlineInputBorder(),
                                                     ),
-                                                    const SizedBox(height: 10),
-                                                    TextFormField(
-                                                      controller: contentController,
-                                                      decoration: const InputDecoration(
-                                                        labelText: 'Content',
-                                                        border: OutlineInputBorder(),
-                                                      ),
-                                                      maxLines: 3,
-                                                      validator: (value) {
-                                                        if (value == null || value.isEmpty) {
-                                                          return 'Please enter the content';
-                                                        }
-                                                        return null;
-                                                      },
+                                                    validator: (value) {
+                                                      if (value == null || value.isEmpty) {
+                                                        return 'Please enter a title';
+                                                      }
+                                                      return null;
+                                                    },
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  TextFormField(
+                                                    controller: contentController,
+                                                    decoration: const InputDecoration(
+                                                      labelText: 'Content',
+                                                      border: OutlineInputBorder(),
                                                     ),
-                                                    const SizedBox(height: 20),
-                                                    ElevatedButton(
-                                                      onPressed: () async {
-                                                        if (_formKey.currentState!.validate()) {
-                                                          final String title = titleController.text;
-                                                          final String content = contentController.text;
-                                                          // Panggil fungsi addBook
-                                                          final response = await request.postJson(
-                                                              // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/edit_post_flutter/'),
+                                                    maxLines: 3,
+                                                    validator: (value) {
+                                                      if (value == null || value.isEmpty) {
+                                                        return 'Please enter the content';
+                                                      }
+                                                      return null;
+                                                    },
+                                                  ),
+                                                  const SizedBox(height: 20),
+                                                  ElevatedButton(
+                                                    onPressed: () async {
+                                                      if (_formKey.currentState!.validate()) {
+                                                        final String title = titleController.text;
+                                                        final String content = contentController.text;
+                                                        // Panggil fungsi addBook
+                                                        final response = await request.postJson(
+                                                          // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/edit_post_flutter/'),
 
-                                                              //For testing
-                                                              "http://127.0.0.1:8000/diskusi-book/edit_post_flutter/",
-                                                              jsonEncode(<String, dynamic>{
-                                                                'title': title,
-                                                                'content': content,
-                                                                'book': _selectedBook.pk,
-                                                                'post': snapshot.data![index].pk,
-                                                              }));
-                                                          if (response['status'] == 'success') {
-                                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                          //For testing
+                                                          "http://127.0.0.1:8000/diskusi-book/edit_post_flutter/",
+                                                          jsonEncode(
+                                                            <String, dynamic>{
+                                                              'title': title,
+                                                              'content': content,
+                                                              'book': _selectedBook.pk,
+                                                              'post': snapshot.data![index].pk,
+                                                            },
+                                                          ),
+                                                        );
+                                                        if (response['status'] == 'success') {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            const SnackBar(
                                                               content: Text("Post telah berhasil diedit!"),
-                                                            ));
-                                                          } else {
-                                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                            ),
+                                                          );
+                                                        } else {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            const SnackBar(
                                                               content: Text("Terdapat kesalahan, silakan coba lagi."),
-                                                            ));
-                                                          }
-                                                          setState(() {
-                                                            _postsFuture = fetchPosts();
-                                                          });
-
-                                                          // Tutup bottom sheet
-                                                          Navigator.pop(context);
+                                                            ),
+                                                          );
                                                         }
-                                                      },
-                                                      style: ElevatedButton.styleFrom(
-                                                        primary: Colors.blue,
-                                                        onPrimary: Colors.white,
-                                                      ),
-                                                      child: const Text('Edit'),
+                                                        setState(
+                                                          () {
+                                                            _postsFuture = fetchPosts();
+                                                          },
+                                                        );
+
+                                                        // Tutup bottom sheet
+                                                        Navigator.pop(context);
+                                                      }
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                      primary: Colors.blue,
+                                                      onPrimary: Colors.white,
                                                     ),
-                                                  ],
-                                                ),
-                                              ));
+                                                    child: const Text('Edit'),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
                                         },
-                                      ).whenComplete(() {
-                                        // Clear the text fields here
-                                        titleController.clear();
-                                        contentController.clear();
-                                      });
+                                      ).whenComplete(
+                                        () {
+                                          // Clear the text fields here
+                                          titleController.clear();
+                                          contentController.clear();
+                                        },
+                                      );
                                     },
                                   ),
                                   IconButton(
                                     icon: Icon(Icons.delete),
                                     onPressed: () async {
                                       final response = await request.postJson(
-                                          // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/remove_post_flutter/'),
+                                        // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/remove_post_flutter/'),
 
-                                          //For testing
-                                          "http://127.0.0.1:8000/diskusi-book/remove_post_flutter/",
-                                          jsonEncode(<String, dynamic>{
+                                        //For testing
+                                        "http://127.0.0.1:8000/diskusi-book/remove_post_flutter/",
+                                        jsonEncode(
+                                          <String, dynamic>{
                                             'post': snapshot.data![index].pk,
-                                          }));
+                                          },
+                                        ),
+                                      );
 
                                       if (response['status'] == 'success') {
-                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                          content: Text(response['message']),
-                                        ));
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(response['message']),
+                                          ),
+                                        );
                                       } else {
-                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                          content: Text(response['message']),
-                                        ));
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(response['message']),
+                                          ),
+                                        );
                                       }
-                                      setState(() {
-                                        // Remove post
-                                        _postsFuture = fetchPosts();
-                                      });
+                                      setState(
+                                        () {
+                                          // Remove post
+                                          _postsFuture = fetchPosts();
+                                        },
+                                      );
                                     },
                                   ),
                                 ]
                               ],
                             ),
-                          ]),
-                        )));
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
               },
             );
           }
