@@ -33,8 +33,17 @@ class _PostPageState extends State<PostPage> {
     String displayContent = content.length > contentMaxLength ? content.substring(0, contentMaxLength) : content;
 
     return Scaffold(
+      backgroundColor: Color(0xFFCDEFFF),
       appBar: AppBar(
-        title: Text('Discussion Thread for "${widget.book.fields.title}"'),
+        centerTitle: true,
+        title: Text(
+          'Discussion Thread for "${widget.book.fields.title}"',
+          style: TextStyle(fontSize: 18),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        // backgroundColor: Colors.deepPurple,
+        // foregroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -44,13 +53,22 @@ class _PostPageState extends State<PostPage> {
             children: <Widget>[
               Text(
                 displayTitle,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
+              if (title.length > titleMaxLength)
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      titleMaxLength += 200;
+                    });
+                  },
+                  child: Text('Show More'),
+                ),
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
                   'Posted by ${widget.post.username}',
-                  style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic, color: Colors.grey),
+                  style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic, color: Colors.grey),
                 ),
               ),
               const SizedBox(height: 10),
@@ -69,7 +87,7 @@ class _PostPageState extends State<PostPage> {
                     Text(
                       displayContent,
                       textAlign: TextAlign.left,
-                      style: const TextStyle(fontSize: 18),
+                      style: const TextStyle(fontSize: 16),
                     ),
                     if (content.length > contentMaxLength)
                       TextButton(
