@@ -5,7 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:readme/modules/home-page/models/book.dart';
 import 'package:readme/modules/rating-book/models/rating.dart';
 import 'package:readme/modules/rating-book/utils/api_service.dart';
-// import 'package:readme/modules/rating-book/widgets/rating_list.dart';
+import 'package:readme/modules/rating-book/widgets/rating_list.dart';
 
 class RatingPage extends StatefulWidget {
   final int? bookId;
