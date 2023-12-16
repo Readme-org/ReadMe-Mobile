@@ -5,6 +5,7 @@ import 'package:readme/modules/home-page/HomeBookPage.dart';
 import 'package:readme/modules/list-book/list.dart';
 import 'package:readme/modules/rating-book/screens/reviews.dart';
 import 'package:readme/authentication/login.dart';
+import 'package:readme/modules/wishlist-book/wishlistPage.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
   final int selectedIndex;
@@ -33,7 +34,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
     if (index != 0 &&
         !Provider.of<CookieRequest>(context, listen: false).loggedIn) {
       // Jika pengguna belum masuk dan mencoba mengakses halaman lain selain HomeBookPage
-      Navigator.push(
+      Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LoginPage()));
       if (!Provider.of<CookieRequest>(context, listen: false).loggedIn) {
         _selectedIndex = 0;
@@ -63,7 +64,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         );
         break;
       case 3:
-        // Navigasi ke halaman Wishlist
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => wishlistPage()),
+        );
         break;
     }
   }

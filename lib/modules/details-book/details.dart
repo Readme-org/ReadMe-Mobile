@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readme/modules/diskusi-book/diskusiBook.dart';
 import 'package:readme/modules/home-page/models/book.dart';
 
 class DetailsPage extends StatefulWidget {
@@ -30,7 +31,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   borderRadius: BorderRadius.circular(5), // More circular corners
                 ),
                 margin: EdgeInsets.all(16),
-                width: MediaQuery.of(context).size.width * 0.7,
+                width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.4,
                 child: ClipRRect( // Clip the image with the same border radius
                   borderRadius: BorderRadius.circular(5),
@@ -89,6 +90,11 @@ class _DetailsPageState extends State<DetailsPage> {
                       OutlinedButton(
                         onPressed: () {
                           // Diskusi Chat button logic
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DiscussionPage(book: widget.book),
+                            ));
                         },
                         style: OutlinedButton.styleFrom(
                           primary: Colors.black,

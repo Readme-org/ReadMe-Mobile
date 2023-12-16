@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:readme/modules/details-book/details_mybook.dart';
 import 'package:readme/modules/list-book/allBookPage.dart';
 import 'package:readme/modules/list-book/myBookPage.dart';
 import 'package:readme/widgets/appbar.dart';
 import 'package:readme/widgets/navbar.dart'; 
 
 class ListPage extends StatefulWidget {
-  const ListPage({Key? key}) : super(key: key);
+  final int initialTab;
+
+  const ListPage({Key? key, this.initialTab = 0}) : super(key: key);
 
   @override
   _ListPageState createState() => _ListPageState();
@@ -13,8 +16,32 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
   TextEditingController searchController = TextEditingController();
-  String filterType = 'All'; // Can be 'All' or 'My'
+  TextEditingController titleController = TextEditingController();
+  TextEditingController authorsController = TextEditingController();
+  TextEditingController isbnController = TextEditingController();
+  TextEditingController imageUrlController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+
+  String searchQuery = '';
+
+  String filterType = 'All';
   bool isAllBooksSelected = true;
+
+  @override
+  void initState() {
+    super.initState();
+    isAllBooksSelected = widget.initialTab == 0;
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    authorsController.dispose();
+    isbnController.dispose();
+    imageUrlController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,44 +95,11 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                       ),
                       onChanged: (value) {
                         // Implement search filter logic based on currentSearchFilter
+                        setState(() {
+                          searchQuery = value;
+                        });
                       },
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.filter_list),
-                    onPressed: () {
-                      // Implement filter logic
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return SafeArea(
-                            child: Wrap(
-                              children: <Widget>[
-                                ListTile(
-                                  leading: const Icon(Icons.library_books),
-                                  title: const Text('All'),
-                                  onTap: () => {},
-                                ),
-                                ListTile(
-                                  leading: const Icon(Icons.fitness_center_rounded),
-                                  title: const Text('Action'),
-                                  onTap: () => {}),
-                                ListTile(
-                                  leading: const Icon(Icons.favorite),
-                                  title: const Text('Romance'),
-                                  onTap: () => {},
-                                ),
-                                ListTile(
-                                  leading: const Icon(Icons.science),
-                                  title: const Text('Science'),
-                                  onTap: () => {},
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
                   ),
                 ],
               ),
@@ -114,7 +108,7 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
 
             // Display AllBook content or other content based on the flag
             Expanded(
-              child: isAllBooksSelected ? buildAllBooks(context) : buildMyBooks(context)
+              child: isAllBooksSelected ? buildAllBooks(context, title: searchQuery) : buildMyBooks(context)
             ),
           ],
         ),
@@ -133,6 +127,7 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       TextFormField(
+                        controller: titleController,
                         decoration: InputDecoration(
                           labelText: 'Title',
                           border: OutlineInputBorder(),
@@ -140,6 +135,7 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                       ),
                       SizedBox(height: 10),
                       TextFormField(
+                        controller: authorsController,
                         decoration: InputDecoration(
                           labelText: 'Authors',
                           border: OutlineInputBorder(),
@@ -147,6 +143,7 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                       ),
                       SizedBox(height: 10),
                       TextFormField(
+                        controller: isbnController,
                         decoration: InputDecoration(
                           labelText: 'ISBN',
                           border: OutlineInputBorder(),
@@ -154,6 +151,7 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                       ),
                       SizedBox(height: 10),
                       TextFormField(
+                        controller: imageUrlController,
                         decoration: InputDecoration(
                           labelText: 'Image URL',
                           border: OutlineInputBorder(),
@@ -161,6 +159,7 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                       ),
                       SizedBox(height: 10),
                       TextFormField(
+                        controller: descriptionController,
                         decoration: InputDecoration(
                           labelText: 'Description',
                           border: OutlineInputBorder(),
@@ -171,7 +170,21 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                       ElevatedButton(
                         child: Text('Submit'),
                         onPressed: () {
-                          // Logic for form submission
+                          final String title = titleController.text;
+                          final String authors = authorsController.text;
+                          final String isbn = isbnController.text;
+                          final String imageUrl = imageUrlController.text;
+                          final String description = descriptionController.text;
+
+                          // Panggil fungsi addBook
+                          addBook(context, title, authors, isbn, imageUrl, description).then((_) {
+                            setState(() {
+                              buildMyBooks(context);
+                            });
+                          });
+
+                          // Tutup bottom sheet
+                          Navigator.pop(context);
                           
                         },
                         style: ElevatedButton.styleFrom(
@@ -183,7 +196,14 @@ class _ListPageState extends State<ListPage> with TickerProviderStateMixin{
                   ),
                 );
               },
-            );
+            ).whenComplete(() {
+              // Clear the text fields here
+              titleController.clear();
+              authorsController.clear();
+              isbnController.clear();
+              imageUrlController.clear();
+              descriptionController.clear();
+            });
           },
           child: Icon(Icons.add),
           backgroundColor: Color.fromARGB(255, 64, 64, 235),
