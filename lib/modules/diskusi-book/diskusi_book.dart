@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:http/http.dart' as http;
@@ -9,13 +8,13 @@ import 'package:readme/modules/diskusi-book/post_form.dart';
 import 'package:readme/modules/home-page/models/book.dart';
 import 'package:readme/modules/diskusi-book/models/post.dart';
 import 'package:readme/authentication/user.dart';
-import 'package:readme/modules/diskusi-book/post_form.dart';
 
 class DiscussionPage extends StatefulWidget {
   final Book book;
 
   const DiscussionPage({Key? key, required this.book}) : super(key: key);
   @override
+  // ignore: library_private_types_in_public_api
   _DiscussionPageState createState() => _DiscussionPageState();
 }
 
@@ -95,7 +94,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
           centerTitle: true,
           title: Text(
             'Discussion Thread for "${_selectedBook.fields.title}"',
-            style: TextStyle(fontSize: 18),
+            style: const TextStyle(fontSize: 18),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -120,16 +119,19 @@ class _DiscussionPageState extends State<DiscussionPage> {
                       itemBuilder: (context, index) {
                         return Material(
                           child: InkWell(
-                            onTap: () {
-                              Navigator.push(
+                            onTap: () async {
+                              await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PostPage(book: _selectedBook, post: snapshot.data![index]),
                                 ),
                               );
+                              setState(() {
+                                _postsFuture = fetchPosts();
+                              });
                             },
                             child: Card(
-                              color: Color(0xFFCDEFFF),
+                              color: const Color(0xFFCDEFFF),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: GestureDetector(
@@ -138,7 +140,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                     children: <Widget>[
                                       Text(
                                         'Posted by ${snapshot.data![index].username}',
-                                        style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: Colors.grey),
+                                        style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: Colors.grey),
                                       ),
                                       Text(
                                         snapshot.data![index].fields.title,
@@ -229,12 +231,14 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                                                     ),
                                                                   );
                                                                   if (response['status'] == 'success') {
+                                                                    // ignore: use_build_context_synchronously
                                                                     ScaffoldMessenger.of(context).showSnackBar(
                                                                       const SnackBar(
                                                                         content: Text("Post telah berhasil diedit!"),
                                                                       ),
                                                                     );
                                                                   } else {
+                                                                    // ignore: use_build_context_synchronously
                                                                     ScaffoldMessenger.of(context).showSnackBar(
                                                                       const SnackBar(
                                                                         content: Text("Terdapat kesalahan, silakan coba lagi."),
@@ -248,12 +252,13 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                                                   );
 
                                                                   // Tutup bottom sheet
+                                                                  // ignore: use_build_context_synchronously
                                                                   Navigator.pop(context);
                                                                 }
                                                               },
                                                               style: ElevatedButton.styleFrom(
-                                                                primary: Colors.blue,
-                                                                onPrimary: Colors.white,
+                                                                foregroundColor: Colors.white, 
+                                                                backgroundColor: Colors.blue,
                                                               ),
                                                               child: const Text('Edit'),
                                                             ),
@@ -271,23 +276,23 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                               },
                                             ),
                                             IconButton(
-                                              icon: Icon(Icons.delete),
+                                              icon: const Icon(Icons.delete),
                                               onPressed: () async {
                                                 showDialog(
                                                   context: context,
                                                   builder: (BuildContext context) {
                                                     return AlertDialog(
-                                                      title: Text('Delete'),
-                                                      content: Text('Apakah anda yakin ingin menghapus post ini?'),
+                                                      title: const Text('Delete'),
+                                                      content: const Text('Apakah anda yakin ingin menghapus post ini?'),
                                                       actions: <Widget>[
                                                         TextButton(
-                                                          child: Text('Cancel'),
+                                                          child: const Text('Cancel'),
                                                           onPressed: () {
                                                             Navigator.of(context).pop();
                                                           },
                                                         ),
                                                         TextButton(
-                                                          child: Text('Delete'),
+                                                          child: const Text('Delete'),
                                                           onPressed: () async {
                                                             final response = await request.postJson(
                                                               // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/remove_post_flutter/'),
@@ -302,12 +307,14 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                                             );
 
                                                             if (response['status'] == 'success') {
+                                                              // ignore: use_build_context_synchronously
                                                               ScaffoldMessenger.of(context).showSnackBar(
                                                                 SnackBar(
                                                                   content: Text(response['message']),
                                                                 ),
                                                               );
                                                             } else {
+                                                              // ignore: use_build_context_synchronously
                                                               ScaffoldMessenger.of(context).showSnackBar(
                                                                 SnackBar(
                                                                   content: Text(response['message']),
@@ -320,6 +327,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                                                 _postsFuture = fetchPosts();
                                                               },
                                                             );
+                                                            // ignore: use_build_context_synchronously
                                                             Navigator.of(context).pop();
                                                           },
                                                         ),
