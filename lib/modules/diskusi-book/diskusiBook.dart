@@ -67,6 +67,9 @@ class _DiscussionPageState extends State<DiscussionPage> {
         if (d != null) {
           Post post = Post.fromJson(d);
           if (post.fields.book == _selectedBook.pk) {
+            // var url2 = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/get_username/${post.fields.user}/');
+
+            //For testing, unComment for testing,tapi janlupa dicomment kode atasnya
             var url2 = Uri.parse('http://127.0.0.1:8000/diskusi-book/get_username/${post.fields.user}/');
             var response2 = await http.get(url2, headers: {"Content-Type": "application/json"});
             if (response2.statusCode == 200) {
