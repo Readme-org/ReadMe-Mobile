@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:readme/modules/diskusi-book/diskusiBook.dart';
+import 'package:readme/modules/diskusi-book/diskusi_book.dart';
 import 'package:readme/modules/home-page/models/book.dart';
 
 class DetailsPage extends StatefulWidget {
