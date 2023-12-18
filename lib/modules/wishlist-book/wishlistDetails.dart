@@ -1,7 +1,11 @@
-import 'package:readme/widgets/appbar.dart';
-import 'package:readme/widgets/navbar.dart';
+import 'dart:convert';
+
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:readme/modules/home-page/models/book.dart';
 import 'package:flutter/material.dart';
 import 'package:readme/modules/wishlist-book/models/wishlistBook.dart';
+import 'package:readme/modules/wishlist-book/wishlistPage.dart';
 
 class wishlistDetails extends StatefulWidget {
   final WishlistBook book;
@@ -15,6 +19,7 @@ class wishlistDetails extends StatefulWidget {
 class _wishlistDetailState extends State<wishlistDetails> {
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.book.title), // Book title in the AppBar
@@ -73,7 +78,6 @@ class _wishlistDetailState extends State<wishlistDetails> {
                     ),
                   ),
                   const SizedBox(height: 24.0),
-                  SizedBox(height: 24.0),
                   Text(
                     'Deskripsi:',
                     style: TextStyle(
@@ -93,6 +97,57 @@ class _wishlistDetailState extends State<wishlistDetails> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add your delete logic here
+          // This is a placeholder, replace it with your actual delete functionality
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Konfirmasi'),
+                content: Text('Buang dari wishlist?'),
+                actions: [
+                  TextButton(
+                    onPressed: () async {
+                      // Add delete action here
+                      final response = await request.postJson(
+                          // "http://127.0.0.1:8000/wishlist-book/delete/"
+                          "https://readme-c11-tk.pbp.cs.ui.ac.id/wishlist-book/delete/",
+                          jsonEncode(
+                              <String, dynamic>{'book_id': widget.book.pk}));
+                      if (response['status'] == 'Berhasil dihapus') {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text("Berhasil dihapus dari wishlsit"),
+                        ));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Terjadi kesalahan")));
+                      }
+                      // For example, you can use Navigator.pop(context) to close the dialog
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => wishlistPage()));
+                    },
+                    child: Text('Delete'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      // Dismiss the dialog
+                      Navigator.pop(context);
+                    },
+                    child: Text('Cancel'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        backgroundColor: Colors.red, // Red button color
+        child: Icon(Icons.delete), // Delete icon
       ),
     );
   }

@@ -86,7 +86,8 @@ class _DetailsPageState extends State<DetailsPage> {
                         onPressed: () async {
                           // Jangan lupa ganti routing
                           final response = await request.postJson(
-                              'http://127.0.0.1:8000/wishlist-book/add-flutter/',
+                              // 'http://127.0.0.1:8000/wishlist-book/add-flutter/'
+                              "https://readme-c11-tk.pbp.cs.ui.ac.id/wishlist-book/add-flutter/",
                               jsonEncode(<String, String>{
                                 'book_id': widget.book.pk.toString()
                               }));
