@@ -4,9 +4,18 @@ import 'dart:convert';
 import 'package:readme/modules/details-book/details.dart';
 import 'package:readme/modules/home-page/models/book.dart';
 
-FutureBuilder<List<Book>> buildAllBooks(BuildContext context) {
+FutureBuilder<List<Book>> buildAllBooks(BuildContext context, {String title = ''}) {
   Future<List<Book>> fetchBooks() async {
-    var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/book-json/');
+    // var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/list-book/book-json/');
+
+    //For testing, unComment for testing,tapi janlupa dicomment kode atasnya
+    var baseUrl = 'http://127.0.0.1:8000/list-book/book-json/';
+    var url = Uri.parse(baseUrl);
+
+    if (title.isNotEmpty) {
+      url = Uri.parse(baseUrl + title + '/');
+    }
+
     var response = await http.get(url, headers: {"Content-Type": "application/json"});
 
     if (response.statusCode == 200) {

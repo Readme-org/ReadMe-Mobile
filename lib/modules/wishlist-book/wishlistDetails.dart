@@ -1,42 +1,44 @@
+import 'package:readme/widgets/appbar.dart';
+import 'package:readme/widgets/navbar.dart';
 import 'package:flutter/material.dart';
-import 'package:readme/modules/list-book/models/myBook.dart';
-import 'package:readme/modules/list-book/myBookPage.dart';
+import 'package:readme/modules/wishlist-book/models/wishlistBook.dart';
 
-class DetailsMyBookPage extends StatefulWidget {
-  final MyBook book;
+class wishlistDetails extends StatefulWidget {
+  final WishlistBook book;
 
-  const DetailsMyBookPage({Key? key, required this.book}) : super(key: key);
+  const wishlistDetails({Key? key, required this.book}) : super(key: key);
 
   @override
-  _DetailsPageState createState() => _DetailsPageState();
+  _wishlistDetailState createState() => _wishlistDetailState();
 }
 
-class _DetailsPageState extends State<DetailsMyBookPage> {
-  bool isWishlistSelected = false; // State to manage wishlist button selection
-
+class _wishlistDetailState extends State<wishlistDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.book.fields.title), // Book title in the AppBar
+        title: Text(widget.book.title), // Book title in the AppBar
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center( // Centering the container
+            Center(
+              // Centering the container
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.black,
-                  borderRadius: BorderRadius.circular(5), // More circular corners
+                  borderRadius:
+                      BorderRadius.circular(5), // More circular corners
                 ),
                 margin: EdgeInsets.all(16),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.4,
-                child: ClipRRect( // Clip the image with the same border radius
+                child: ClipRRect(
+                  // Clip the image with the same border radius
                   borderRadius: BorderRadius.circular(5),
                   child: Image.network(
-                    widget.book.fields.image,
+                    widget.book.image,
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -48,7 +50,7 @@ class _DetailsPageState extends State<DetailsMyBookPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.book.fields.title,
+                    widget.book.title,
                     style: TextStyle(
                       fontSize: 24.0,
                       fontWeight: FontWeight.bold,
@@ -56,7 +58,7 @@ class _DetailsPageState extends State<DetailsMyBookPage> {
                   ),
                   const SizedBox(height: 8.0),
                   Text(
-                    'Penulis: ${widget.book.fields.authors}',
+                    'Penulis: ${widget.book.penulis}',
                     style: TextStyle(
                       fontSize: 18.0,
                       fontStyle: FontStyle.italic,
@@ -64,7 +66,7 @@ class _DetailsPageState extends State<DetailsMyBookPage> {
                   ),
                   const SizedBox(height: 16.0),
                   Text(
-                    'ISBN: ${widget.book.fields.isbn}',
+                    'ISBN: ${widget.book.isbn}',
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w500,
@@ -81,22 +83,9 @@ class _DetailsPageState extends State<DetailsMyBookPage> {
                   ),
                   SizedBox(height: 8.0),
                   Text(
-                    widget.book.fields.description,
+                    widget.book.description,
                     style: TextStyle(
                       fontSize: 16.0,
-                    ),
-                  ),
-                  SizedBox(height: 24.0),
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ElevatedButton(
-                      onPressed: () => deleteMyBook(context, widget.book.pk),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.red, 
-                        onPrimary: Colors.white, 
-                      ),
-                      child: Text('Delete'),
                     ),
                   ),
                 ],
