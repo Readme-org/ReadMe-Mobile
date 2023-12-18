@@ -1,28 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'dart:convert';
-import 'package:readme/modules/details-book/details_mybook.dart';
-import 'package:readme/modules/wishlist-book/wishlistPage.dart';
 import 'package:readme/modules/wishlist-book/wishlistDetails.dart';
 import 'package:readme/modules/wishlist-book/models/wishlistBook.dart';
-// import 'package:readme/modules/list-book/models';
 
 FutureBuilder<List<WishlistBook>> buildwishlist(BuildContext context) {
   Future<List<WishlistBook>> fetchBooks() async {
     // TODO:
     // URL UNTUK AKSES DJANGO
-    // var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/wishlit-book/wishlist-json');
+    var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/wishlist-book/get-json');
 
     // Testing url
-    var url = Uri.parse('http://127.0.0.1:8000/wishlist-book/get-json/');
+    // var url = Uri.parse('http://127.0.0.1:8000/wishlist-book/get-json/');
     var request = context.read<CookieRequest>();
     var response = await request.get(url.toString());
 
     List<WishlistBook> wishlist_product = [];
     for (var d in response) {
-      // print(d);
       if (d != null) {
         wishlist_product.add(WishlistBook.fromJson(d));
       }
@@ -33,7 +27,6 @@ FutureBuilder<List<WishlistBook>> buildwishlist(BuildContext context) {
   return FutureBuilder<List<WishlistBook>>(
     future: fetchBooks(),
     builder: (context, AsyncSnapshot snapshot) {
-      print(snapshot);
       if (snapshot.connectionState == ConnectionState.waiting) {
         return const Center(child: CircularProgressIndicator());
       } else if (snapshot.hasError) {
@@ -58,6 +51,7 @@ FutureBuilder<List<WishlistBook>> buildwishlist(BuildContext context) {
 
               return GestureDetector(
                 onTap: () {
+                  // Untuk ke book details
                   Navigator.push(
                     context,
                     MaterialPageRoute(

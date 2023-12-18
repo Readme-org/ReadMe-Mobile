@@ -2,13 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:readme/modules/home-page/models/book.dart';
-import 'package:readme/modules/diskusi-book/models/post.dart';
-import 'package:readme/authentication/user.dart';
-
-import 'diskusiBook.dart';
 
 class PostFormPage extends StatefulWidget {
   final Book book;
@@ -36,7 +31,7 @@ class _PostFormPageState extends State<PostFormPage> {
     final request = context.watch<CookieRequest>();
 
     return Scaffold(
-      backgroundColor: Color(0xFFCDEFFF),
+      backgroundColor: const Color(0xFFCDEFFF),
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
@@ -127,11 +122,14 @@ class _PostFormPageState extends State<PostFormPage> {
                               'book': _selectedBook.pk,
                             }));
                         if (response['status'] == 'success') {
+                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                             content: Text("Post telah berhasil dibuat!"),
                           ));
+                          // ignore: use_build_context_synchronously
                           Navigator.pop(context);
                         } else {
+                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                             content: Text("Terdapat kesalahan, silakan coba lagi."),
                           ));
