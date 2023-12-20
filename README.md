@@ -11,10 +11,10 @@
 https://readme-c11-tk.pbp.cs.ui.ac.id
 
 ### Pipeline Status
-[![Release]([Link])]([Link])
+[![Build status](https://build.appcenter.ms/v0.1/apps/9b12479b-c516-4014-ac71-33794af6dcc2/branches/main/badge)](https://appcenter.ms)
 
 ### Tautan Link
-[ReadMe]([LINK])
+[ReadMe](https://install.appcenter.ms/orgs/readme-mobile/apps/readme/distribution_groups/public)
 
 #### Deskripsi Aplikasi 🗣️
 
