@@ -3,9 +3,10 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:readme/modules/home-page/models/book.dart';
 import 'package:readme/modules/rating-book/models/rating.dart';
 import 'package:http/http.dart' as http;
+import 'package:readme/core/url.dart' as app_data;
 
 class ApiService {
-  static String baseUrl = 'http://127.0.0.1:8000/rating-book';
+  static String baseUrl = '${app_data.baseUrl}/rating-book';
 
   static bool isLoggedIn(CookieRequest cookieRequest) {
     return cookieRequest.loggedIn;

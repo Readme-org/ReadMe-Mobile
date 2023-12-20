@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:readme/modules/home-page/models/book.dart';
 import 'package:readme/modules/rating-book/models/rating.dart';
 import 'package:readme/modules/rating-book/utils/api_service.dart';
+import 'package:readme/core/url.dart' as app_data;
 // import 'package:readme/modules/rating-book/widgets/rating_list.dart';
 
 class RatingPage extends StatefulWidget {
@@ -23,7 +24,7 @@ class _RatingPageState extends State<RatingPage> {
   late Future<Book>? book;
   late int bookId;
 
-  final baseImageUrl = 'http://127.0.0.1:8000/rating-book/mobile/image';
+  final baseImageUrl = '${app_data.baseUrl}/rating-book/mobile/image';
   final ratingController = TextEditingController();
   final ratingFocusNode = FocusNode();
   var ratingValue = 0;

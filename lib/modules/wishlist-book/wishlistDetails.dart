@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:readme/core/url.dart' as app_data;
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:readme/modules/home-page/models/book.dart';
@@ -113,8 +113,7 @@ class _wishlistDetailState extends State<wishlistDetails> {
                     onPressed: () async {
                       // Add delete action here
                       final response = await request.postJson(
-                          // "http://127.0.0.1:8000/wishlist-book/delete/"
-                          "https://readme-c11-tk.pbp.cs.ui.ac.id/wishlist-book/delete/",
+                          "${app_data.baseUrl}/wishlist-book/delete/",
                           jsonEncode(
                               <String, dynamic>{'book_id': widget.book.pk}));
                       if (response['status'] == 'Berhasil dihapus') {
