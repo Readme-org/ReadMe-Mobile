@@ -95,7 +95,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                FlutterLogo(size: 100),
+                Image.asset('lib/assets/logo.png', width: 100, height: 100), 
                 SizedBox(height: 30),
                 TextField(
                   controller: _usernameController,

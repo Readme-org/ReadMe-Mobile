@@ -93,7 +93,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                       child: child,
                     );
                   },
-                  child: FlutterLogo(size: 100),
+                  child: Image.asset('lib/assets/logo.png', width: 100, height: 100),
+                  // Menggunakan Image.asset untuk memuat logo aplikasi
                 ),
                 const SizedBox(height: 30),
                 _buildAnimatedTextField(_usernameController, 'Username'),
