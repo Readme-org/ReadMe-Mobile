@@ -44,7 +44,7 @@ class BookPageState extends State<HomebookPage> with TickerProviderStateMixin {
       // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/search-books/'),
 
       // For testing Only
-      Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id//search-books/'),
+      Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/search-books/'),
 
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -289,7 +289,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
         // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/history/history-json/'),
 
         //For testing Only
-        Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id//history/history-json/'),
+        Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/history/history-json/'),
 
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
