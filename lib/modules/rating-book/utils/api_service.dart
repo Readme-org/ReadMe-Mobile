@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:readme/modules/home-page/models/book.dart';
@@ -101,6 +103,37 @@ class ApiService {
     final response = await request.send();
     if (response.statusCode == 201) {
       return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<int> getUserID(CookieRequest cookieRequest) async {
+    final request = http.Request('GET', Uri.parse('$baseUrl/mobile/userid/'));
+    request.headers.addAll(cookieRequest.headers);
+
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      final body = await response.stream.bytesToString();
+      final result = jsonDecode(body);
+      return result['id'];
+    } else {
+      return -1;
+    }
+  }
+
+  static Future<bool> isRated(CookieRequest cookieRequest, int book) async {
+    final request = http.Request('GET', Uri.parse('$baseUrl/mobile/israted/'));
+    request.headers.addAll(cookieRequest.headers);
+    request.bodyFields = {
+      'book': book.toString(),
+    };
+
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      final body = await response.stream.bytesToString();
+      final result = jsonDecode(body);
+      return result['is_rated'];
     } else {
       return false;
     }
