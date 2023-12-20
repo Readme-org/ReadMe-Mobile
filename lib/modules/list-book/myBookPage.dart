@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:readme/modules/details-book/details_mybook.dart';
 import 'package:readme/modules/list-book/list.dart';
 import 'package:readme/modules/list-book/models/myBook.dart';
 import 'package:readme/core/url.dart' as app_data;
 
-FutureBuilder<List<MyBook>> buildMyBooks(BuildContext context) {
-  Future<List<MyBook>> fetchBooks() async {
-    var url = Uri.parse('${app_data.baseUrl}/list-book/myBook-json/');
+FutureBuilder<List<dynamic>> buildMyBooks(BuildContext context) {
+  final request = Provider.of<CookieRequest>(context, listen: false);
 
-    var response = await http.get(url, headers: {"Content-Type": "application/json"});
+  Future<List<dynamic>> fetchBooks() async {
+    var response = await request.get('${app_data.baseUrl}/list-book/myBook-json/');
 
-    if (response.statusCode == 200) {
-      List<dynamic> booksJson = jsonDecode(response.body);
-      return booksJson.map((json) => MyBook.fromJson(json)).toList();
+    if (!response.isEmpty) {
+      return response.map((json) => MyBook.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load books');
     }
   }
 
-  return FutureBuilder<List<MyBook>>(
+  return FutureBuilder<List<dynamic>>(
     future: fetchBooks(),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -101,44 +102,41 @@ FutureBuilder<List<MyBook>> buildMyBooks(BuildContext context) {
 }
 
 Future<void> addBook(BuildContext context, String title, String authors, String isbn, String imageUrl, String description) async {
-  final response = await http.post(
-    Uri.parse('${app_data.baseUrl}/list-book/add-book-flutter/'),
+  final request = Provider.of<CookieRequest>(context, listen: false);
 
-    headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode({
-      'title': title,
-      'authors': authors,
-      'isbn': isbn,
-      'image': imageUrl,
-      'description': description,
-    }),
-  );
+    final response = await request.postJson(
+        '${app_data.baseUrl}/list-book/add-book-flutter/', jsonEncode({
+        'title': title,
+        'authors': authors,
+        'isbn': isbn,
+        'image': imageUrl,
+        'description': description,
+      })
+    );
 
-  if (response.statusCode == 200) {
-    // Jika server mengembalikan respon "OK", maka tampilkan snackbar dengan pesan sukses.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Book added successfully!')),
-    );
-  } else {
-    // Jika server tidak mengembalikan respon "OK", maka tampilkan error.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to add the book.')),
-    );
-  }
+    if (response["status"] == "success") {
+      // Jika server mengembalikan respon "OK", maka tampilkan snackbar dengan pesan sukses.
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Book added successfully!')),
+      );
+    } else {
+      // Jika server tidak mengembalikan respon "OK", maka tampilkan error.
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add the book.')),
+      );
+    }
 }
 
 Future<void> deleteMyBook(BuildContext context, int bookId) async {
-  final response = await http.delete(
-    Uri.parse('${app_data.baseUrl}/list-book/delete-book-flutter/$bookId/'),
+  final request = Provider.of<CookieRequest>(context, listen: false);
 
-    headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
+  final response = await request.postJson(
+    '${app_data.baseUrl}/list-book/delete-book-flutter/$bookId/' , jsonEncode({
+      "galen": "'kece",
+    })
   );
 
-  if (response.statusCode == 200) {
+  if (response["status"] == "success") {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => ListPage(initialTab: 1)), // 1 untuk My Book tab
