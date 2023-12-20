@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:readme/core/url.dart' as app_data;
 import 'package:readme/modules/home-page/models/book.dart';
 import 'package:readme/modules/rating-book/models/rating.dart';
@@ -47,13 +48,24 @@ class _RatingPageState extends State<RatingPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    cookieRequest = Provider.of<CookieRequest>(context);
+    cookieRequest = Provider.of<CookieRequest>(context, listen: false);
     books = ApiService.getBooks(cookieRequest);
     if (widget.bookId != null) {
       rating = ApiService.getRating(cookieRequest, widget.bookId!);
       book = books.then((value) =>
           value.firstWhere((element) => element.pk == widget.bookId));
     }
+  }
+
+  double averageRating(List<Rating> ratings) {
+    if (ratings.isEmpty) {
+      return 0;
+    }
+    double sum = 0;
+    for (final rating in ratings) {
+      sum += rating.rating;
+    }
+    return sum / ratings.length;
   }
 
   @override
@@ -77,35 +89,98 @@ class _RatingPageState extends State<RatingPage> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
-                      width: 128,
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 500),
-                        child: bookId == 0
-                            ? // show a border if no book is selected
-                            Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.grey,
-                                    width: 1,
+                  Column(
+                    children: [
+                      SizedBox(
+                          width: 128,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 500),
+                            child: bookId == 0
+                                ? // show a border if no book is selected
+                                Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.grey,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    height: 200,
+                                    width: double.infinity,
+                                    child: const Icon(Icons.book),
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: '$baseImageUrl/$bookId/',
+                                    height: 200,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
+                          )),
+                      const SizedBox(height: 4),
+                      FutureBuilder<List<Rating>>(
+                        future: rating,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Column(
+                              children: [
+                                RatingBarIndicator(
+                                  rating: averageRating(snapshot.data!),
+                                  itemBuilder: (context, index) => const Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  itemCount: 5,
+                                  itemSize: 24.0,
+                                  direction: Axis.horizontal,
+                                ),
+                                Text(
+                                  '${averageRating(snapshot.data!).toStringAsFixed(1)}/5.0',
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                height: 200,
-                                width: double.infinity,
-                                child: const Icon(Icons.book),
-                              )
-                            : CachedNetworkImage(
-                                imageUrl: '$baseImageUrl/$bookId/',
-                                height: 200,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) => const Center(
-                                  child: CircularProgressIndicator(),
+                                Text('${snapshot.data!.length} reviews',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    )),
+                              ],
+                            );
+                          } else {
+                            return Column(
+                              children: [
+                                RatingBarIndicator(
+                                  rating: 0,
+                                  itemBuilder: (context, index) => const Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  itemCount: 5,
+                                  itemSize: 24.0,
+                                  direction: Axis.horizontal,
                                 ),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              ),
-                      )),
+                                const Text(
+                                  '0.0/5.0',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Text('0 reviews',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                    )),
+                              ],
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0),
                     child: SizedBox(
@@ -311,6 +386,7 @@ class _RatingPageState extends State<RatingPage> {
                                     ratingController.clear();
                                     rating = ApiService.getRating(
                                         cookieRequest, bookId);
+                                    ratingFocusNode.unfocus();
                                   });
                                 }
                               },

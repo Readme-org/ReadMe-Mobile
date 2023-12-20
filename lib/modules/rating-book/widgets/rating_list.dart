@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:readme/modules/rating-book/models/rating.dart';
 import 'package:readme/modules/rating-book/utils/api_service.dart';
 
@@ -68,19 +69,39 @@ class _RatingListState extends State<RatingList> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(rating.message),
+            Container(
+              width: double.infinity,
+              height: 50,
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: Text(rating.message),
+            ),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    Text(rating.username),
-                    const SizedBox(width: 10),
-                    _buildRatingStars(rating.rating),
+                    RatingBarIndicator(
+                      rating: rating.rating.toDouble(),
+                      itemBuilder: (context, index) => const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      itemCount: 5,
+                      itemSize: 20.0,
+                      direction: Axis.horizontal,
+                    ),
+                    const SizedBox(width: 8),
+                    Text('by ${rating.username}'),
                   ],
                 ),
-                _buildDeleteButton(context, rating, userId),
+                _buildDeleteButton(rating, userId),
               ],
             ),
           ],
@@ -89,52 +110,25 @@ class _RatingListState extends State<RatingList> {
     );
   }
 
-  Widget _buildRatingStars(int rating) {
-    // This widget builds the stars for the rating
-    // The stars are built using the rating value
-    // and the star icon is either filled or not filled
-    // depending on the rating value
-    return Row(
-      children: [
-        for (int i = 0; i < 5; i++)
-          Icon(
-            Icons.star,
-            color: i < rating ? Colors.yellow : Colors.grey,
-          ),
-      ],
-    );
-  }
-
-  Widget _buildDeleteButton(BuildContext context, Rating rating, int userId) {
-    // This widget builds the delete button
-    // The delete button is only shown if the user
-    // is the owner of the rating
-    return FutureBuilder<bool>(
-      future: ApiService.deleteRating(
-        Provider.of<CookieRequest>(context),
-        rating.id,
-      ),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data!) {
-            return IconButton(
-              onPressed: () {
-                setState(() {
-                  _ratings = ApiService.getRating(
-                    Provider.of<CookieRequest>(context),
-                    rating.book,
-                  );
-                });
-              },
-              icon: const Icon(Icons.delete),
-            );
-          } else {
-            return const SizedBox();
+  Widget _buildDeleteButton(Rating rating, int userId) {
+    // The delete button is only shown if the user is the owner of the rating
+    if (rating.user == userId) {
+      return IconButton(
+        onPressed: () async {
+          final result = await ApiService.deleteRating(
+              Provider.of<CookieRequest>(context, listen: false), rating.id);
+          if (result) {
+            setState(() {
+              _ratings = ApiService.getRating(
+                  Provider.of<CookieRequest>(context, listen: false),
+                  rating.book);
+            });
           }
-        } else {
-          return const SizedBox();
-        }
-      },
-    );
+        },
+        icon: const Icon(Icons.delete),
+      );
+    } else {
+      return const SizedBox();
+    }
   }
 }
