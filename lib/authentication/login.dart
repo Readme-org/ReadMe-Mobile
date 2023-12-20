@@ -4,6 +4,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:readme/authentication/user.dart';
 import 'package:readme/authentication/register.dart';
+import 'package:readme/core/url.dart' as app_data;
 import 'package:readme/modules/home-page/HomeBookPage.dart';
 
 class LoginApp extends StatelessWidget {
@@ -109,6 +110,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.blue.shade900,
+                      onPrimary: Colors.white,
                     ),
                     child: const Text('Login'),
                   ),
@@ -164,7 +166,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     String password = _passwordController.text;
 
     final response = await request.login(
-      "http://127.0.0.1:8000/auth/login/",
+      "${app_data.baseUrl}/auth/login/",
       {'username': username, 'password': password},
     );
 
@@ -176,7 +178,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomebookPage()), // Asumsikan HomebookPage siap menerima dan menggunakan data pengguna
+        MaterialPageRoute(builder: (context) => HomebookPage()),
       );
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()

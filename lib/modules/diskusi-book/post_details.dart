@@ -10,6 +10,7 @@ import 'package:readme/modules/diskusi-book/models/post.dart';
 import 'package:readme/modules/diskusi-book/models/comment.dart';
 import 'package:readme/modules/diskusi-book/models/reply.dart';
 import 'package:readme/authentication/user.dart';
+import 'package:readme/core/url.dart' as app_data;
 
 class PostPage extends StatefulWidget {
   final Book book;
@@ -66,10 +67,7 @@ class _PostPageState extends State<PostPage> {
   }
 
   Future<List<CommentWithReplies>> fetchComments() async {
-    // var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/json-comment/');
-
-    //For testing, unComment for testing,tapi janlupa dicomment kode atasnya
-    var url = Uri.parse('http://127.0.0.1:8000/diskusi-book/json-comment/');
+    var url = Uri.parse('${app_data.baseUrl}/diskusi-book/json-comment/');
 
     var response = await http.get(url, headers: {"Content-Type": "application/json"});
 
@@ -80,10 +78,7 @@ class _PostPageState extends State<PostPage> {
         if (d != null) {
           Comment comment = Comment.fromJson(d);
           if (comment.fields.post == _selectedPost.pk) {
-            // var url2 = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/get_username/${comment.fields.user}/');
-
-            //For testing, unComment for testing,tapi janlupa dicomment kode atasnya
-            var url2 = Uri.parse('http://127.0.0.1:8000/diskusi-book/get_username/${comment.fields.user}/');
+            var url2 = Uri.parse('${app_data.baseUrl}/diskusi-book/get_username/${comment.fields.user}/');
             var response2 = await http.get(url2, headers: {"Content-Type": "application/json"});
             if (response2.statusCode == 200) {
               var data2 = jsonDecode(response2.body);
@@ -103,10 +98,7 @@ class _PostPageState extends State<PostPage> {
   }
 
   Future<List<Reply>> fetchReplies(Comment comment) async {
-    // var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/json-reply/');
-
-    //For testing, unComment for testing,tapi janlupa dicomment kode atasnya
-    var url = Uri.parse('http://127.0.0.1:8000/diskusi-book/json-reply/');
+    var url = Uri.parse('${app_data.baseUrl}/diskusi-book/json-reply/');
 
     var response = await http.get(url, headers: {"Content-Type": "application/json"});
 
@@ -117,10 +109,7 @@ class _PostPageState extends State<PostPage> {
         if (d != null) {
           Reply reply = Reply.fromJson(d);
           if (reply.fields.comment == comment.pk) {
-            // var url2 = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/get_username/${reply.fields.user}/');
-
-            //For testing, unComment for testing,tapi janlupa dicomment kode atasnya
-            var url2 = Uri.parse('http://127.0.0.1:8000/diskusi-book/get_username/${reply.fields.user}/');
+            var url2 = Uri.parse('${app_data.baseUrl}/diskusi-book/get_username/${reply.fields.user}/');
             var response2 = await http.get(url2, headers: {"Content-Type": "application/json"});
             if (response2.statusCode == 200) {
               var data2 = jsonDecode(response2.body);
@@ -279,10 +268,7 @@ class _PostPageState extends State<PostPage> {
                                                     final String content = contentController.text;
                                                     // Panggil fungsi addBook
                                                     final response = await request.postJson(
-                                                      // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/edit_post_flutter/'),
-
-                                                      //For testing
-                                                      "http://127.0.0.1:8000/diskusi-book/edit_post_flutter/",
+                                                      "${app_data.baseUrl}/diskusi-book/edit_post_flutter/",
                                                       jsonEncode(
                                                         <String, dynamic>{
                                                           'title': title,
@@ -357,10 +343,7 @@ class _PostPageState extends State<PostPage> {
                                             child: const Text('Delete'),
                                             onPressed: () async {
                                               final response = await request.postJson(
-                                                // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/remove_post_flutter/'),
-
-                                                //For testing
-                                                "http://127.0.0.1:8000/diskusi-book/remove_post_flutter/",
+                                                "${app_data.baseUrl}/diskusi-book/remove_post_flutter/",
                                                 jsonEncode(
                                                   <String, dynamic>{
                                                     'post': _selectedPost.pk,
@@ -432,10 +415,7 @@ class _PostPageState extends State<PostPage> {
                             if (comment.isNotEmpty) {
                               // Kirim ke Django dan tunggu respons
                               final response = await request.postJson(
-                                  // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/create_comment_flutter/'),
-
-                                  //For testing
-                                  "http://127.0.0.1:8000/diskusi-book/create_comment_flutter/",
+                                  "${app_data.baseUrl}/diskusi-book/create_comment_flutter/",
                                   jsonEncode(<String, dynamic>{
                                     'content': comment,
                                     'post': _selectedPost.pk,
@@ -536,10 +516,7 @@ class _PostPageState extends State<PostPage> {
                                                               final String content = createReplyController.text;
                                                               // Panggil fungsi addBook
                                                               final response = await request.postJson(
-                                                                // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/create_reply_flutter/'),
-
-                                                                //For testing
-                                                                "http://127.0.0.1:8000/diskusi-book/create_reply_flutter/",
+                                                                "${app_data.baseUrl}/diskusi-book/create_reply_flutter/",
                                                                 jsonEncode(
                                                                   <String, dynamic>{
                                                                     'content': content,
@@ -626,10 +603,7 @@ class _PostPageState extends State<PostPage> {
                                                                 final String content = commentContentController.text;
                                                                 // Panggil fungsi addBook
                                                                 final response = await request.postJson(
-                                                                  // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/edit_comment_flutter/'),
-
-                                                                  //For testing
-                                                                  "http://127.0.0.1:8000/diskusi-book/edit_comment_flutter/",
+                                                                  "${app_data.baseUrl}/diskusi-book/edit_comment_flutter/",
                                                                   jsonEncode(
                                                                     <String, dynamic>{
                                                                       'content': content,
@@ -702,10 +676,7 @@ class _PostPageState extends State<PostPage> {
                                                         child: const Text('Delete'),
                                                         onPressed: () async {
                                                           final response = await request.postJson(
-                                                            // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/remove_comment_flutter/'),
-
-                                                            //For testing
-                                                            "http://127.0.0.1:8000/diskusi-book/remove_comment_flutter/",
+                                                            "${app_data.baseUrl}/diskusi-book/remove_comment_flutter/",
                                                             jsonEncode(
                                                               <String, dynamic>{
                                                                 'comment': commentWithReplies.comment.pk,
@@ -809,10 +780,7 @@ class _PostPageState extends State<PostPage> {
                                                                           final String content = editReplyContentController.text;
                                                                           // Panggil fungsi addBook
                                                                           final response = await request.postJson(
-                                                                            // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/edit_reply_flutter/'),
-
-                                                                            //For testing
-                                                                            "http://127.0.0.1:8000/diskusi-book/edit_reply_flutter/",
+                                                                            "${app_data.baseUrl}/diskusi-book/edit_reply_flutter/",
                                                                             jsonEncode(
                                                                               <String, dynamic>{
                                                                                 'content': content,
@@ -884,10 +852,7 @@ class _PostPageState extends State<PostPage> {
                                                                   child: const Text('Delete'),
                                                                   onPressed: () async {
                                                                     final response = await request.postJson(
-                                                                      // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/remove_reply_flutter/'),
-
-                                                                      //For testing
-                                                                      "http://127.0.0.1:8000/diskusi-book/remove_reply_flutter/",
+                                                                      "${app_data.baseUrl}/diskusi-book/remove_reply_flutter/",
                                                                       jsonEncode(
                                                                         <String, dynamic>{
                                                                           'reply': reply.pk,

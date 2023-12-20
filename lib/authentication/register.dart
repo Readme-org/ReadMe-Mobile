@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:readme/core/url.dart' as app_data;
 
 class RegisterPage extends StatefulWidget {
-  @override
-  _RegisterPageState createState() => _RegisterPageState();
-}
+  @override 
+  _RegisterPageState createState() => _RegisterPageState(); 
+} 
 
 class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderStateMixin {
   final TextEditingController _usernameController = TextEditingController();
@@ -65,10 +66,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
     }
 
     final response = await http.post(
-      // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/auth/register/'),
-
-      //For testing only
-      Uri.parse('http://127.0.0.1:8000/auth/register/'),
+      Uri.parse('${app_data.baseUrl}/auth/register/'),
       body: {
         'username': username,
         'password': password,
@@ -134,6 +132,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.blue.shade900,
+                      onPrimary: Colors.white,
                     ),
                     child: Text('Register'),
                   ),

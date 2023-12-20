@@ -4,13 +4,11 @@ import 'dart:convert';
 import 'package:readme/modules/details-book/details_mybook.dart';
 import 'package:readme/modules/list-book/list.dart';
 import 'package:readme/modules/list-book/models/myBook.dart';
+import 'package:readme/core/url.dart' as app_data;
 
 FutureBuilder<List<MyBook>> buildMyBooks(BuildContext context) {
   Future<List<MyBook>> fetchBooks() async {
-    // var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/list-book/myBook-json/');
-
-    //For testing
-    var url = Uri.parse('http://127.0.0.1:8000/list-book/myBook-json/');
+    var url = Uri.parse('${app_data.baseUrl}/list-book/myBook-json/');
 
     var response = await http.get(url, headers: {"Content-Type": "application/json"});
 
@@ -104,10 +102,7 @@ FutureBuilder<List<MyBook>> buildMyBooks(BuildContext context) {
 
 Future<void> addBook(BuildContext context, String title, String authors, String isbn, String imageUrl, String description) async {
   final response = await http.post(
-    // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/list-book/add-book-flutter/'),
-
-    //For testing
-    Uri.parse('http://127.0.0.1:8000/list-book/add-book-flutter/'),
+    Uri.parse('${app_data.baseUrl}/list-book/add-book-flutter/'),
 
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -136,14 +131,10 @@ Future<void> addBook(BuildContext context, String title, String authors, String 
 
 Future<void> deleteMyBook(BuildContext context, int bookId) async {
   final response = await http.delete(
-    // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/list-book/delete-book-flutter/$bookId/'),
-
-    //For testing ONLY
-    Uri.parse('http://127.0.0.1:8000/list-book/delete-book-flutter/$bookId/'),
+    Uri.parse('${app_data.baseUrl}/list-book/delete-book-flutter/$bookId/'),
 
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
-      // Add any other headers like authorization tokens if needed
     },
   );
 
