@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:readme/modules/home-page/models/search_history.dart';
 import 'dart:convert';
 // import 'package:readme/modules/list-book/list.dart';
 import 'package:readme/widgets/appbar.dart';
 import 'package:readme/widgets/navbar.dart';
 import 'package:readme/widgets/background.dart';
-import 'package:readme/core/url.dart' as app_data;
+import 'package:readme/modules/home-page/models/book.dart'; 
 
 class HomebookPage extends StatefulWidget {
   const HomebookPage({Key? key}) : super(key: key);
@@ -40,7 +41,10 @@ class BookPageState extends State<HomebookPage> with TickerProviderStateMixin {
 
   Future<List<Book>> _searchBooks(String query) async {
     final response = await http.post(
-      Uri.parse('${app_data.baseUrl}/search-books/'),
+      // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/search-books/'),
+
+      // For testing Only
+      Uri.parse('http://127.0.0.1:8000/search-books/'),
 
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -268,8 +272,8 @@ class SearchHistoryPage extends StatefulWidget {
 }
 
 class _SearchHistoryPageState extends State<SearchHistoryPage> {
-  List<Map<String, dynamic>> searchHistories =
-      []; // Menyimpan daftar history sebagai map
+  List<SearchHistory> searchHistories = [];
+
   bool isLoading = true;
   String errorMessage = '';
 
@@ -282,7 +286,10 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
   Future<void> _loadSearchHistory() async {
     try {
       final response = await http.get(
-        Uri.parse('${app_data.baseUrl}/history/history-json/'),
+        // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/history/history-json/'),
+
+        //For testing Only
+        Uri.parse('http://127.0.0.1:8000/history/history-json/'),
 
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
@@ -293,8 +300,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
-          searchHistories = data
-              .cast<Map<String, dynamic>>(); // Proper casting of the list items
+          searchHistories = SearchHistoryList.fromJson(data).searchHistories;
           isLoading = false;
         });
       } else {
@@ -326,14 +332,13 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
           itemCount: searchHistories.length,
           itemBuilder: (context, index) {
             // Akses 'fields' untuk mendapatkan 'query'
-            final historyItem = searchHistories[index];
-            final query = historyItem['fields']['query'] as String? ??
-                'Unknown'; // Gunakan 'fields' dan 'query'
+            final historyItem = searchHistories[index].fields;
+            final query = historyItem.query;
 
             return ListTile(
               title: Text(query),
-              subtitle:
-                  Text("Created at: ${historyItem['fields']['created_at']}"),
+              subtitle: Text("Created at: ${historyItem.createdAt}"),
+
             );
           },
         ),
