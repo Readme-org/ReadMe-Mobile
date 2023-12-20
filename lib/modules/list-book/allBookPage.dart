@@ -3,13 +3,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:readme/modules/details-book/details.dart';
 import 'package:readme/modules/home-page/models/book.dart';
+import 'package:readme/core/url.dart' as app_data;
 
 FutureBuilder<List<Book>> buildAllBooks(BuildContext context, {String title = ''}) {
   Future<List<Book>> fetchBooks() async {
-    // var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/list-book/book-json/');
-
-    //For testing, unComment for testing,tapi janlupa dicomment kode atasnya
-    var baseUrl = 'http://127.0.0.1:8000/list-book/book-json/';
+    var baseUrl = '${app_data.baseUrl}/list-book/book-json/';
     var url = Uri.parse(baseUrl);
 
     if (title.isNotEmpty) {

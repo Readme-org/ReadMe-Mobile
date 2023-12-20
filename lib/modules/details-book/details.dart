@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:readme/core/url.dart' as app_data;
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:readme/modules/diskusi-book/diskusi_book.dart';
@@ -86,8 +87,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         onPressed: () async {
                           // Jangan lupa ganti routing
                           final response = await request.postJson(
-                              // 'http://127.0.0.1:8000/wishlist-book/add-flutter/'
-                              "https://readme-c11-tk.pbp.cs.ui.ac.id/wishlist-book/add-flutter/",
+                              "${app_data.baseUrl}/wishlist-book/add-flutter/",
                               jsonEncode(<String, String>{
                                 'book_id': widget.book.pk.toString()
                               }));

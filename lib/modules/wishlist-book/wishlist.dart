@@ -3,15 +3,14 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:readme/modules/wishlist-book/wishlistDetails.dart';
 import 'package:readme/modules/wishlist-book/models/wishlistBook.dart';
+import 'package:readme/core/url.dart' as app_data;
 
 FutureBuilder<List<WishlistBook>> buildwishlist(BuildContext context) {
   Future<List<WishlistBook>> fetchBooks() async {
     // TODO:
     // URL UNTUK AKSES DJANGO
-    var url = Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/wishlist-book/get-json');
+    var url = Uri.parse('${app_data.baseUrl}/wishlist-book/get-json');
 
-    // Testing url
-    // var url = Uri.parse('http://127.0.0.1:8000/wishlist-book/get-json/');
     var request = context.read<CookieRequest>();
     var response = await request.get(url.toString());
 
