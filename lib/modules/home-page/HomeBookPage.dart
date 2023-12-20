@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:readme/modules/home-page/models/search_history.dart';
 import 'dart:convert';
 // import 'package:readme/modules/list-book/list.dart';
 import 'package:readme/widgets/appbar.dart';
 import 'package:readme/widgets/navbar.dart';
 import 'package:readme/widgets/background.dart';
-import 'package:readme/core/url.dart' as app_data;
+import 'package:readme/modules/home-page/models/book.dart'; 
 
 class HomebookPage extends StatefulWidget {
   const HomebookPage({Key? key}) : super(key: key);
@@ -19,14 +20,17 @@ class BookPageState extends State<HomebookPage> with TickerProviderStateMixin {
   TextEditingController _searchController = TextEditingController();
   late AnimationController _animationController;
   late Animation<Color?> _colorTween;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(vsync: this, duration: Duration(seconds: 15))
-      ..repeat(reverse: true);
-    _colorTween = ColorTween(begin: Colors.blue.shade400, end: Colors.blue.shade900)
-      .animate(_animationController);
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 15))
+          ..repeat(reverse: true);
+    _colorTween =
+        ColorTween(begin: Colors.blue.shade400, end: Colors.blue.shade900)
+            .animate(_animationController);
   }
 
   @override
@@ -37,8 +41,10 @@ class BookPageState extends State<HomebookPage> with TickerProviderStateMixin {
 
   Future<List<Book>> _searchBooks(String query) async {
     final response = await http.post(
-      Uri.parse('${app_data.baseUrl}/search-books/'),
+      // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/search-books/'),
 
+      // For testing Only
+      Uri.parse('http://127.0.0.1:8000/search-books/'),
 
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -59,13 +65,16 @@ class BookPageState extends State<HomebookPage> with TickerProviderStateMixin {
   }
 
   void _onSearch() {
+    setState(() => isLoading = true); // Mulai loading
     String query = _searchController.text;
     _searchBooks(query).then((books) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SearchResultPage(books: books)),
       );
-    });
+    }).catchError((error) {
+      // Handle error here
+    }).whenComplete(() => setState(() => isLoading = false)); // Akhiri loading
   }
 
   void _navigateToSearchHistory() {
@@ -79,66 +88,74 @@ class BookPageState extends State<HomebookPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: 'ReadMe'),
-      body: GradientBackground(
-        colorTween: _colorTween,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'AI Book Discovery',
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue.shade800,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 30),
-              Container(
-                width: 300,
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.shade100,
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
+      body: Stack(
+        children: <Widget>[
+          GradientBackground(
+            colorTween: _colorTween,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    'AI Book Discovery',
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue.shade800,
                     ),
-                  ],
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: placeholder,
-                    hintStyle: TextStyle(color: Colors.blue.shade300),
-                    border: InputBorder.none,
-                    prefixIcon: Icon(Icons.search, color: Colors.blue.shade700),
+                    textAlign: TextAlign.center,
                   ),
-                ),
+                  SizedBox(height: 30),
+                  Container(
+                    width: 300,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.blue.shade100,
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: placeholder,
+                        hintStyle: TextStyle(color: Colors.blue.shade300),
+                        border: InputBorder.none,
+                        prefixIcon:
+                            Icon(Icons.search, color: Colors.blue.shade700),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.blue.shade700,
+                      onPrimary: Colors.white,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 36, vertical: 12),
+                      shape: StadiumBorder(),
+                    ),
+                    onPressed: _onSearch,
+                    icon: Icon(Icons.search, size: 24),
+                    label: Text('Search', style: TextStyle(fontSize: 20)),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _navigateToSearchHistory,
+                    child: Text('View Search History'),
+                  ),
+                ],
               ),
-              SizedBox(height: 30),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.blue.shade700,
-                  onPrimary: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 36, vertical: 12),
-                  shape: StadiumBorder(),
-                ),
-                onPressed: _onSearch,
-                icon: Icon(Icons.search, size: 24),
-                label: Text('Search', style: TextStyle(fontSize: 20)),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _navigateToSearchHistory,
-                child: Text('View Search History'),
-              ),
-            ],
+            ),
           ),
-        ),
+          isLoading ? Center(child: CircularProgressIndicator()) : Container(),
+          // Tampilkan CircularProgressIndicator di tengah layar saat loading
+        ],
       ),
       bottomNavigationBar: const CustomBottomNavigationBar(
         selectedIndex: 0,
@@ -154,7 +171,12 @@ class Book {
   final String thumbnailUrl;
   final double rating;
 
-  Book({required this.title, required this.author, required this.description, required this.thumbnailUrl, required this.rating});
+  Book(
+      {required this.title,
+      required this.author,
+      required this.description,
+      required this.thumbnailUrl,
+      required this.rating});
 
   factory Book.fromJson(Map<String, dynamic> json) {
     return Book(
@@ -212,9 +234,12 @@ class BookCard extends StatelessWidget {
                 width: 50,
                 height: 75,
               ),
-              title: Text(book.title, style: TextStyle(fontWeight: FontWeight.bold)),
+              title: Text(book.title,
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               subtitle: Text(book.author),
-              trailing: (book.rating > 0) ? Icon(Icons.star, color: Colors.amber) : null,
+              trailing: (book.rating > 0)
+                  ? Icon(Icons.star, color: Colors.amber)
+                  : null,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -229,9 +254,9 @@ class BookCard extends StatelessWidget {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () {
-                },
-                child: Text('More Details', style: TextStyle(color: Colors.blue)),
+                onPressed: () {},
+                child:
+                    Text('More Details', style: TextStyle(color: Colors.blue)),
               ),
             ),
           ],
@@ -247,7 +272,8 @@ class SearchHistoryPage extends StatefulWidget {
 }
 
 class _SearchHistoryPageState extends State<SearchHistoryPage> {
-  List<Map<String, dynamic>> searchHistories = []; // Menyimpan daftar history sebagai map
+  List<SearchHistory> searchHistories = [];
+
   bool isLoading = true;
   String errorMessage = '';
 
@@ -260,7 +286,10 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
   Future<void> _loadSearchHistory() async {
     try {
       final response = await http.get(
-        Uri.parse('${app_data.baseUrl}/history/history-json/'),
+        // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/history/history-json/'),
+
+        //For testing Only
+        Uri.parse('http://127.0.0.1:8000/history/history-json/'),
 
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
@@ -271,11 +300,12 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
-          searchHistories = data.cast<Map<String, dynamic>>(); // Proper casting of the list items
+          searchHistories = SearchHistoryList.fromJson(data).searchHistories;
           isLoading = false;
         });
       } else {
-        throw Exception('Failed to load search history with status code: ${response.statusCode}.');
+        throw Exception(
+            'Failed to load search history with status code: ${response.statusCode}.');
       }
     } catch (e) {
       setState(() {
@@ -297,16 +327,18 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
           title: Text('Search History'),
           backgroundColor: Colors.blue.shade800,
         ),
-        body: ListView.builder( // Pastikan di dalam Scaffold
+        body: ListView.builder(
+          // Pastikan di dalam Scaffold
           itemCount: searchHistories.length,
           itemBuilder: (context, index) {
             // Akses 'fields' untuk mendapatkan 'query'
-            final historyItem = searchHistories[index];
-            final query = historyItem['fields']['query'] as String? ?? 'Unknown'; // Gunakan 'fields' dan 'query'
-            
+            final historyItem = searchHistories[index].fields;
+            final query = historyItem.query;
+
             return ListTile(
               title: Text(query),
-              subtitle: Text("Created at: ${historyItem['fields']['created_at']}"),
+              subtitle: Text("Created at: ${historyItem.createdAt}"),
+
             );
           },
         ),
