@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:readme/modules/home-page/models/book.dart';
+import 'package:readme/core/url.dart' as app_data;
 
 class PostFormPage extends StatefulWidget {
   final Book book;
@@ -112,10 +113,7 @@ class _PostFormPageState extends State<PostFormPage> {
                       if (_formKey.currentState!.validate()) {
                         // Kirim ke Django dan tunggu respons
                         final response = await request.postJson(
-                            // Uri.parse('https://readme-c11-tk.pbp.cs.ui.ac.id/diskusi-book/create_post_flutter/'),
-
-                            //For testing
-                            "http://127.0.0.1:8000/diskusi-book/create_post_flutter/",
+                            "${app_data.baseUrl}/diskusi-book/create_post_flutter/",
                             jsonEncode(<String, dynamic>{
                               'title': _title,
                               'content': _content,

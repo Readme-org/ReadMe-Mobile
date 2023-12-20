@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:readme/authentication/user.dart';
 import 'package:readme/modules/home-page/HomeBookPage.dart';
+import 'package:readme/core/url.dart' as app_data;
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -21,10 +22,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     String username = biguname.isLoggedIn ? biguname.username : "Guest";
 
     void _handleLogout() async {
-      // final response = await request.logout("https://readme-c11-tk.pbp.cs.ui.ac.id/auth/logout/");
-
-      // For testing ONLY
-      final response = await request.logout("http://127.0.0.1:8000/auth/logout/");
+      final response = await request.logout("${app_data.baseUrl}/auth/logout/");
 
       String message = response["message"];
 
