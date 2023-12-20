@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:readme/core/url.dart' as app_data;
 import 'package:readme/modules/home-page/models/book.dart';
 import 'package:readme/modules/rating-book/models/rating.dart';
 import 'package:readme/modules/rating-book/utils/api_service.dart';
-import 'package:readme/core/url.dart' as app_data;
-// import 'package:readme/modules/rating-book/widgets/rating_list.dart';
+import 'package:readme/modules/rating-book/widgets/rating_list.dart';
 
 class RatingPage extends StatefulWidget {
   final int? bookId;
@@ -20,14 +20,23 @@ class RatingPage extends StatefulWidget {
 class _RatingPageState extends State<RatingPage> {
   late CookieRequest cookieRequest;
   late Future<List<Book>> books;
-  late Future<List<Rating>> rating;
-  late Future<Book>? book;
+  Future<List<Rating>>? rating;
+  Future<Book>? book;
   late int bookId;
 
   final baseImageUrl = '${app_data.baseUrl}/rating-book/mobile/image';
   final ratingController = TextEditingController();
   final ratingFocusNode = FocusNode();
   var ratingValue = 0;
+
+  void _changeBookId(int id) {
+    setState(() {
+      bookId = id;
+      rating = ApiService.getRating(cookieRequest, bookId);
+      book = books
+          .then((value) => value.firstWhere((element) => element.pk == bookId));
+    });
+  }
 
   @override
   void initState() {
@@ -52,12 +61,12 @@ class _RatingPageState extends State<RatingPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+          // leading: IconButton(
+          //   icon: const Icon(Icons.arrow_back),
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          // ),
           title: const Text('Rating'),
           centerTitle: true,
         ),
@@ -150,14 +159,9 @@ class _RatingPageState extends State<RatingPage> {
                                           .toList()
                                     ],
                                     onChanged: (value) {
-                                      setState(() {
-                                        if (value is int) {
-                                          bookId = value;
-                                          book = books.then((value) =>
-                                              value.firstWhere((element) =>
-                                                  element.pk == bookId));
-                                        }
-                                      });
+                                      if (value is int) {
+                                        _changeBookId(value);
+                                      }
                                     },
                                   );
                                 } else if (snapshot.hasError) {
@@ -187,7 +191,7 @@ class _RatingPageState extends State<RatingPage> {
                                   value: 1,
                                   child: Row(
                                     children: [
-                                      Icon(Icons.star, color: Colors.blue)
+                                      Icon(Icons.star, color: Colors.amber)
                                     ],
                                   ),
                                 ),
@@ -195,8 +199,8 @@ class _RatingPageState extends State<RatingPage> {
                                   value: 2,
                                   child: Row(
                                     children: [
-                                      Icon(Icons.star, color: Colors.blue),
-                                      Icon(Icons.star, color: Colors.blue)
+                                      Icon(Icons.star, color: Colors.amber),
+                                      Icon(Icons.star, color: Colors.amber)
                                     ],
                                   ),
                                 ),
@@ -204,9 +208,9 @@ class _RatingPageState extends State<RatingPage> {
                                   value: 3,
                                   child: Row(
                                     children: [
-                                      Icon(Icons.star, color: Colors.blue),
-                                      Icon(Icons.star, color: Colors.blue),
-                                      Icon(Icons.star, color: Colors.blue),
+                                      Icon(Icons.star, color: Colors.amber),
+                                      Icon(Icons.star, color: Colors.amber),
+                                      Icon(Icons.star, color: Colors.amber),
                                     ],
                                   ),
                                 ),
@@ -214,10 +218,10 @@ class _RatingPageState extends State<RatingPage> {
                                   value: 4,
                                   child: Row(
                                     children: [
-                                      Icon(Icons.star, color: Colors.blue),
-                                      Icon(Icons.star, color: Colors.blue),
-                                      Icon(Icons.star, color: Colors.blue),
-                                      Icon(Icons.star, color: Colors.blue),
+                                      Icon(Icons.star, color: Colors.amber),
+                                      Icon(Icons.star, color: Colors.amber),
+                                      Icon(Icons.star, color: Colors.amber),
+                                      Icon(Icons.star, color: Colors.amber),
                                     ],
                                   ),
                                 ),
@@ -225,11 +229,11 @@ class _RatingPageState extends State<RatingPage> {
                                   value: 5,
                                   child: Row(
                                     children: [
-                                      Icon(Icons.star, color: Colors.blue),
-                                      Icon(Icons.star, color: Colors.blue),
-                                      Icon(Icons.star, color: Colors.blue),
-                                      Icon(Icons.star, color: Colors.blue),
-                                      Icon(Icons.star, color: Colors.blue),
+                                      Icon(Icons.star, color: Colors.amber),
+                                      Icon(Icons.star, color: Colors.amber),
+                                      Icon(Icons.star, color: Colors.amber),
+                                      Icon(Icons.star, color: Colors.amber),
+                                      Icon(Icons.star, color: Colors.amber),
                                     ],
                                   ),
                                 ),
@@ -253,8 +257,8 @@ class _RatingPageState extends State<RatingPage> {
                                 border: OutlineInputBorder(),
                                 labelText: 'Message',
                               ),
-                              maxLines: 3,
-                              minLines: 3,
+                              maxLines: 2,
+                              minLines: 2,
                               keyboardType: TextInputType.multiline,
                               textInputAction: TextInputAction.done,
                               onFieldSubmitted: (value) {},
@@ -298,11 +302,35 @@ class _RatingPageState extends State<RatingPage> {
                                     ratingValue,
                                     ratingController.text);
                                 if (result) {
-                                  // Navigator.pop(context, true);
-                                  print(result);
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                    content: Text('Rating added'),
+                                  ));
+                                  setState(() {
+                                    ratingValue = 0;
+                                    ratingController.clear();
+                                    rating = ApiService.getRating(
+                                        cookieRequest, bookId);
+                                  });
                                 }
                               },
-                              child: const Text('Submit'),
+                              child: FutureBuilder<bool>(
+                                future:
+                                    ApiService.isRated(cookieRequest, bookId),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    if (snapshot.data!) {
+                                      return const Text('Update');
+                                    } else {
+                                      return const Text('Submit');
+                                    }
+                                  } else if (snapshot.hasError) {
+                                    return const Icon(Icons.error);
+                                  } else {
+                                    return const CircularProgressIndicator();
+                                  }
+                                },
+                              ),
                             ),
                           ),
                         ],
@@ -312,73 +340,48 @@ class _RatingPageState extends State<RatingPage> {
                 ],
               ),
             ),
+            const Divider(),
+            Container(
+                padding: const EdgeInsets.all(16.0),
+                child: const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Reviews',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )),
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              child: FutureBuilder<List<Rating>>(
+                future: rating,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    return RatingList(
+                      ratings: snapshot.data!,
+                    );
+                  } else if (snapshot.hasError) {
+                    return const Icon(Icons.error);
+                  } else if (bookId != 0 &&
+                      snapshot.hasData &&
+                      snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('No reviews'),
+                    );
+                  } else if (bookId == 0) {
+                    return const Center(
+                      child: Text('Please select a book'),
+                    );
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-              //   const Divider(),
-              //   FutureBuilder<List<Rating>>(
-              //     future: rating,
-              //     builder: (context, snapshot) {
-              //       if (snapshot.hasData) {
-              //         return RatingList(
-              //           ratings: snapshot.data!,
-              //         );
-              //       } else if (snapshot.hasError) {
-              //         return Center(
-              //           child: Text('Error: ${snapshot.error}'),
-              //         );
-              //       } else {
-              //         return const Center(
-              //           child: CircularProgressIndicator(),
-              //         );
-              //       }
-              //     },
-              //   ),
-
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Rating'),
-//         centerTitle: true,
-//       ),
-//       body: FutureBuilder<List<Rating>>(
-//         future: rating,
-//         builder: (context, snapshot) {
-//           if (snapshot.hasData) {
-//             return RatingList(
-//               ratings: snapshot.data!,
-//             );
-//           } else if (snapshot.hasError) {
-//             return Center(
-//               child: Text('Error: ${snapshot.error}'),
-//             );
-//           } else {
-//             return Center(
-//               child: CircularProgressIndicator(),
-//             );
-//           }
-//         },
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: () async {
-//           final result = await showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return RatingDialog();
-//             },
-//           );
-
-//           if (result != null) {
-//             setState(() {
-//               rating = ApiService.getRating(cookieRequest, book);
-//             });
-//           }
-//         },
-//         child: Icon(Icons.add),
-//       ),
-//     );
-//   }
-// }
